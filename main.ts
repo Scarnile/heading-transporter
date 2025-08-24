@@ -4,10 +4,12 @@ import { HeadingInfo, SaveHeading } from 'heading';
 
 export interface HeadingTransporterSettings {
 	HeadingInfos: HeadingInfo[];
+	test: string;
 }
 
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
-	HeadingInfos: []
+	HeadingInfos: [],
+	test: "testString"
 }
 
 export default class HeadingTransporterPlugin extends Plugin {
@@ -32,7 +34,6 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.onClick(async () => {	
 							console.log(this.settings.HeadingInfos)
 
-							const selection = editor.getSelection()
 							const headingName = lineContent.slice(1).trim()
 							const file = view.file
 							
@@ -40,9 +41,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 							const heading: HeadingInfo = {headingName: headingName, file: file}
 							this.settings.HeadingInfos.push(heading)
+							headingSelectorView.display()
 							this.saveSettings()
-
-
 							
 						});
 					});
@@ -54,9 +54,12 @@ export default class HeadingTransporterPlugin extends Plugin {
 			})
 		);
 
+		let headingSelectorView: HeadingSelectorView
+
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
-			(leaf) => new HeadingSelectorView(leaf, this.settings)
+			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this.settings)
+			
 		)
 
 		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {

@@ -22,6 +22,14 @@ export class HeadingSelectorView extends ItemView {
     }
 
     async onOpen() {
+        this.display()
+    }
+
+    async onClose() {
+        
+    }
+
+    display(): void {
         const container = this.contentEl;
         container.empty();
         
@@ -32,9 +40,5 @@ export class HeadingSelectorView extends ItemView {
         for (let index = 0; index < this.settings.HeadingInfos.length; index++) {
             container.createEl('h4', { text: this.settings.HeadingInfos[index].headingName});
         }
-    }
-
-    async onClose() {
-        
     }
 }
