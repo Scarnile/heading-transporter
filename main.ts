@@ -17,6 +17,30 @@ export default class HeadingTransporterPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		this.registerEvent(
+			this.app.workspace.on("editor-menu", (menu, editor, view) => {
+				menu.addItem((item) => {
+				item
+					.setTitle('Add to Heading Selector')
+					.setIcon('document')
+					.onClick(async () => {	
+						const selection = editor.getSelection()
+						const firstCharacter = selection.charAt(0)
+
+						// TODO: Get line of selection to see if the entire line is a heading
+
+						if (firstCharacter == "#") {
+							new Notice ("It's a heading")
+							
+						} else {
+							new Notice("Not a heading")
+						}
+						
+					});
+				});
+			})
+		);
+
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
 			(leaf) => new HeadingSelectorView(leaf)
