@@ -1,6 +1,5 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-
-// Remember to rename these classes and interfaces!
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf} from 'obsidian';
+import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
 
 interface HeadingTransporterSettings {
 	mySetting: string;
@@ -13,13 +12,21 @@ const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 export default class HeadingTransporterPlugin extends Plugin {
 	settings: HeadingTransporterSettings;
 
+
+
 	async onload() {
 		await this.loadSettings();
 
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			new Notice('This is a notice!');
+		this.registerView(
+			HEADING_SELECTOR_VIEW_TYPE,
+			(leaf) => new HeadingSelectorView(leaf)
+		)
+
+		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
+			this.activateView()
 		});
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
+
 
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
@@ -50,12 +57,35 @@ export default class HeadingTransporterPlugin extends Plugin {
 			}
 		});
 
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new HeadingTransporterSettingTab(this.app, this));
 
 	}
 
 	onunload() {
 
+	}
+
+
+	async activateView() {
+		const { workspace } = this.app;
+
+		let leaf: WorkspaceLeaf | null = null;
+		const leaves = workspace.getLeavesOfType(HEADING_SELECTOR_VIEW_TYPE);
+
+		if (leaves.length > 0) {
+		// A leaf with our view already exists, use that
+		leaf = leaves[0];
+		} else {
+		// Our view could not be found in the workspace, create a new leaf
+		// in the right sidebar for it
+		leaf = workspace.getRightLeaf(false);
+		if (!leaf) return
+		await leaf.setViewState({ type: HEADING_SELECTOR_VIEW_TYPE, active: true });
+		}
+
+		// "Reveal" the leaf in case it is in a collapsed sidebar
+		workspace.revealLeaf(leaf);
+	
 	}
 
 	async loadSettings() {
@@ -69,7 +99,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 
 
-class SampleSettingTab extends PluginSettingTab {
+class HeadingTransporterSettingTab extends PluginSettingTab {
 	plugin: HeadingTransporterPlugin;
 
 	constructor(app: App, plugin: HeadingTransporterPlugin) {
