@@ -1,11 +1,17 @@
-import { ItemView, WorkspaceLeaf } from "obsidian"
+import { HeadingTransporterSettings } from "main";
+import { ItemView, Setting, WorkspaceLeaf } from "obsidian"
 
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
 export class HeadingSelectorView extends ItemView {
-    constructor(leaf: WorkspaceLeaf) {
+
+    settings: HeadingTransporterSettings
+
+    constructor(leaf: WorkspaceLeaf, settings: HeadingTransporterSettings) {
         super(leaf);
+        this.settings = settings;
     }
+    
 
     getViewType(): string {
         return HEADING_SELECTOR_VIEW_TYPE
@@ -18,7 +24,14 @@ export class HeadingSelectorView extends ItemView {
     async onOpen() {
         const container = this.contentEl;
         container.empty();
+        
+        
+
         container.createEl('h4', { text: 'Heading Selector' });
+        
+        for (let index = 0; index < this.settings.HeadingInfos.length; index++) {
+            container.createEl('h4', { text: this.settings.HeadingInfos[index].headingName});
+        }
     }
 
     async onClose() {

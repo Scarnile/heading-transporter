@@ -1,18 +1,17 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
+import { HeadingInfo, SaveHeading } from 'heading';
 
-interface HeadingTransporterSettings {
-	mySetting: string;
+export interface HeadingTransporterSettings {
+	HeadingInfos: HeadingInfo[];
 }
 
-const DEFAULT_SETTINGS: HeadingTransporterSettings = {
-	mySetting: 'default'
+export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
+	HeadingInfos: []
 }
 
 export default class HeadingTransporterPlugin extends Plugin {
 	settings: HeadingTransporterSettings;
-
-
 
 	async onload() {
 		await this.loadSettings();
@@ -25,18 +24,25 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 				const isHeading = (lineContent.charAt(0) == "#") ? true : false
 
-				// TODO: Get line of selection to see if the entire line is a heading
-
 				if (isHeading) {
 					menu.addItem((item) => {
 					item
 						.setTitle('Add to Heading Selector')
 						.setIcon('document')
 						.onClick(async () => {	
-							const selection = editor.getSelection()
-							const filePath = view.file?.path
+							console.log(this.settings.HeadingInfos)
 
+							const selection = editor.getSelection()
+							const headingName = lineContent.slice(1).trim()
+							const file = view.file
 							
+							if (!file) return
+
+							const heading: HeadingInfo = {headingName: headingName, file: file}
+							this.settings.HeadingInfos.push(heading)
+							this.saveSettings()
+
+
 							
 						});
 					});
@@ -50,7 +56,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
-			(leaf) => new HeadingSelectorView(leaf)
+			(leaf) => new HeadingSelectorView(leaf, this.settings)
 		)
 
 		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
@@ -143,15 +149,15 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+		// new Setting(containerEl)
+		// 	.setName('Setting #1')
+		// 	.setDesc('It\'s a secret')
+		// 	.addText(text => text
+		// 		.setPlaceholder('Enter your secret')
+		// 		.setValue(this.plugin.settings.mySetting)
+		// 		.onChange(async (value) => {
+		// 			this.plugin.settings.mySetting = value;
+		// 			await this.plugin.saveSettings();
+		// 		}));
 	}
 }

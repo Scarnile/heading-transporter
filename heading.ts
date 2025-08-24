@@ -1,11 +1,12 @@
+import { HeadingTransporterSettings } from "main";
 import { TFile } from "obsidian";
 
-export interface HeadingLocation {
+export interface HeadingInfo {
     headingName: string;
-    vaultPath: string;
     file: TFile;
 }
 
-export const SaveHeading = (selection: string) =>{
+export const SaveHeading = (headingName: string, setting: HeadingTransporterSettings) => {
+    // console.log(headingName)
     
 }
