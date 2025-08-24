@@ -36,18 +36,28 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 							const headingName = lineContent.slice(1).trim()
 							const file = view.file
-							
-							if (!file) return
+							this.settings.test = "M"
 
-							const heading: HeadingInfo = {headingName: headingName, file: file}
-							this.settings.HeadingInfos.push(heading)
-							headingSelectorView.display()
-							this.saveSettings()
+
+							if (!file) return
 							
+							const heading: HeadingInfo = {headingName: headingName, file: file} as HeadingInfo;
+							this.settings.HeadingInfos.push(heading)
+							// this.settings.HeadingInfos = [heading, heading];
+
+							await this.saveData(this.settings);
+
+							console.log(this.settings.HeadingInfos)
+
+
+							// headingSelectorView.display();
 						});
 					});
 				} else {
 					new Notice("Not a heading")
+					this.settings.test = ""
+					this.saveSettings();
+
 				}
 
 				
@@ -152,15 +162,16 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		// new Setting(containerEl)
-		// 	.setName('Setting #1')
-		// 	.setDesc('It\'s a secret')
-		// 	.addText(text => text
-		// 		.setPlaceholder('Enter your secret')
-		// 		.setValue(this.plugin.settings.mySetting)
-		// 		.onChange(async (value) => {
-		// 			this.plugin.settings.mySetting = value;
-		// 			await this.plugin.saveSettings();
-		// 		}));
+		new Setting(containerEl)
+			.setName('Setting #1')
+			.setDesc('It\'s a secret')
+			.addText(text => text
+				.setPlaceholder('Enter your secret')
+				.setValue(this.plugin.settings.test)
+				.onChange(async (value) => {
+					this.plugin.settings.test = value;
+					console.log(value)
+					await this.plugin.saveSettings();
+				}));
 	}
 }

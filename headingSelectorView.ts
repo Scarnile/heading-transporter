@@ -22,19 +22,19 @@ export class HeadingSelectorView extends ItemView {
     }
 
     async onOpen() {
-        this.display()
+        // this.display()
+        console.log("onOpen")
     }
 
     async onClose() {
+        console.log("onClose")
         
     }
 
-    display(): void {
+    async display() {
         const container = this.contentEl;
         container.empty();
         
-        
-
         container.createEl('h4', { text: 'Heading Selector' });
         
         for (let index = 0; index < this.settings.HeadingInfos.length; index++) {
