@@ -20,16 +20,16 @@ export type HeadingInfo = {
 export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app: App) => {
     const vault = app.vault
     const headingFile = vault.getFileByPath(headingInfo.path)
+    const headingName = headingInfo.headingName
 
     if (!headingFile) return
+    
     vault.read(headingFile).then((fileContent) => {
-        const headingPosition = fileContent.search("# " + headingInfo.headingName) + headingInfo.headingName.length + 2
+        const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
         
-        const updatedFileContent = fileContent.slice(0, headingPosition) + value + fileContent.slice(headingPosition)
+        const updatedFileContent = fileContent.slice(0, headingPosition) + "\n" + value + fileContent.slice(headingPosition)
         vault.modify(headingFile, updatedFileContent)
-        console.log()
         
     })
-    
     
 }
