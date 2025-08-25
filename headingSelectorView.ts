@@ -22,7 +22,7 @@ export class HeadingSelectorView extends ItemView {
     }
 
     async onOpen() {
-        // this.display()
+        this.display()
         console.log("onOpen")
     }
 

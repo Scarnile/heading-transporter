@@ -1,6 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo, SaveHeading } from 'heading';
+import { HeadingInfo} from 'heading';
 
 export interface HeadingTransporterSettings {
 	HeadingInfos: HeadingInfo[];
@@ -17,6 +17,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+		let headingSelectorView: HeadingSelectorView
+
 
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu, editor, view) => {
@@ -32,80 +34,42 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setTitle('Add to Heading Selector')
 						.setIcon('document')
 						.onClick(async () => {	
-							console.log(this.settings.HeadingInfos)
 
 							const headingName = lineContent.slice(1).trim()
-							const file = view.file
-							this.settings.test = "M"
+							const path = view.file?.path
+							if (!path) return
 
+							this.settings.test = "A"
 
-							if (!file) return
-							
-							const heading: HeadingInfo = {headingName: headingName, file: file} as HeadingInfo;
-							this.settings.HeadingInfos.push(heading)
-							// this.settings.HeadingInfos = [heading, heading];
-
-							await this.saveData(this.settings);
-
-							console.log(this.settings.HeadingInfos)
-
-
-							// headingSelectorView.display();
+							this.settings.HeadingInfos.push({headingName: headingName, path: path})
+							if (headingSelectorView) headingSelectorView.display()
+							await this.saveSettings()
 						});
 					});
 				} else {
 					new Notice("Not a heading")
 					this.settings.test = ""
 					this.saveSettings();
-
 				}
 
 				
 			})
 		);
 
-		let headingSelectorView: HeadingSelectorView
+
 
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
 			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this.settings)
-			
 		)
 
 		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
 			this.activateView()
+			console.log(this.settings.HeadingInfos)
 		});
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
 
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						// new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
 
 		this.addSettingTab(new HeadingTransporterSettingTab(this.app, this));
 
@@ -144,6 +108,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		console.log("Saved Settings")
 	}
 }
 
@@ -169,7 +134,8 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.test)
 				.onChange(async (value) => {
-					this.plugin.settings.test = value;
+					this.plugin.settings.HeadingInfos.push({headingName: "Test", path: ""});
+					this.plugin.settings.HeadingInfos[0].headingName = value;
 					console.log(value)
 					await this.plugin.saveSettings();
 				}));

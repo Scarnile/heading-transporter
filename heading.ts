@@ -1,12 +1,18 @@
 import { HeadingTransporterSettings } from "main";
 import { TFile } from "obsidian";
 
-export interface HeadingInfo {
+export type HeadingInfo = {
     headingName: string;
-    file: TFile;
+    path: string;
 }
 
-export const SaveHeading = (headingName: string, setting: HeadingTransporterSettings) => {
-    // console.log(headingName)
-    
-}
+
+// export class HeadingInfo {
+//     headingName: string;
+//     file: TFile;
+
+//     constructor(headingName: string, file: TFile) {
+//         this.headingName = headingName
+//         this.file = file
+//     }
+// }
