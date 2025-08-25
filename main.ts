@@ -1,6 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo, TransportToHeading} from 'heading';
+import { HeadingInfo, SaveHeading, TransportToHeading} from 'heading';
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -62,11 +62,10 @@ export default class HeadingTransporterPlugin extends Plugin {
 							const path = view.file?.path
 							if (!path) return
 
-							this.settings.test = "A"
-
-							this.settings.headingInfos.push({headingName: headingName, path: path})
+							SaveHeading(headingName, path, this.settings)
 							if (headingSelectorView) headingSelectorView.display()
 							await this.saveSettings()
+						
 						});
 					});
 				} else {
