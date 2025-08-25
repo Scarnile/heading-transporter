@@ -1,16 +1,19 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
 import { HeadingInfo} from 'heading';
+import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
 	headingInfos: HeadingInfo[];
 	selectedHeadingIndex: number;
+	cutWithCommand: boolean;
 	test: string;
 }
 
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	headingInfos: [],
 	selectedHeadingIndex: 0,
+	cutWithCommand: false,
 	test: "testString"
 }
 
@@ -21,12 +24,28 @@ export default class HeadingTransporterPlugin extends Plugin {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
 
+		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
+			
+		})
+
+		this.addCommand({
+			id: "transport-heading",
+			name: "Transport Heading",
+			callback: () => {
+				console.log("Transported")
+				const editor = this.app.workspace.activeEditor?.editor
+
+				if (!editor) return
+				const selection = editor.getSelection()
+				console.log(selection)
+				
+			}
+		})
 
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu, editor, view) => {
 
-				const linePosition = editor.getCursor('from').line
-				const lineContent = editor.getLine(linePosition)
+				const lineContent = getLineFromCursor(editor)
 
 				const isHeading = (lineContent.charAt(0) == "#") ? true : false
 

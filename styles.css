@@ -8,8 +8,10 @@ If your plugin does not need CSS, delete this file.
 */
 .hsp-heading-container {
     background-color: var(--interactive-normal	);
-    padding: 1px 30px;
+    padding: 1px 10px;
     margin: 10px;
+    height: 30px;
+    vertical-align: middle;
 }
 
 .hsp-heading-container:hover {
@@ -17,7 +19,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .hsp-heading {
-    /* color: red; */
+    margin: 0px;
 }
 
 .hsp-selected {

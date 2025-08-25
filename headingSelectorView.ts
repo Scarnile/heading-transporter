@@ -25,11 +25,9 @@ export class HeadingSelectorView extends ItemView {
 
     async onOpen() {
         this.display()
-        console.log("onOpen")
     }
 
     async onClose() {
-        console.log("onClose")
         
     }
 
@@ -45,7 +43,7 @@ export class HeadingSelectorView extends ItemView {
             headingContainer.createEl('h6', { text: this.settings.headingInfos[index].headingName,
                 cls: "hsp-heading"});
 
-            // Color the selected heading
+            // Color heading when selected only
             if (index == this.settings.selectedHeadingIndex) {
                 headingContainer.addClass("hsp-selected")
             } else {
