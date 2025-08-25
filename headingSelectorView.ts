@@ -42,14 +42,25 @@ export class HeadingSelectorView extends ItemView {
         
         for (let index = 0; index < this.settings.headingInfos.length; index++) {
             const headingContainer = container.createEl('div', {cls: "hsp-heading-container"})
-            headingContainer.createEl('h4', { text: this.settings.headingInfos[index].headingName,
+            headingContainer.createEl('h6', { text: this.settings.headingInfos[index].headingName,
                 cls: "hsp-heading"});
+
+            // Color the selected heading
+            if (index == this.settings.selectedHeadingIndex) {
+                headingContainer.addClass("hsp-selected")
+            } else {
+                if (headingContainer.classList.contains("hsp-selected")) {
+                    headingContainer.removeClass("hsp-selected")
+                }
+            }
+
             headingContainer.addEventListener("click", () => {
                 // Select heading when clicked
                 this.settings.selectedHeadingIndex = index
                 headingContainer.addClass("hsp-selected")
                 this.plugin.saveSettings()
                 console.log(this.settings.selectedHeadingIndex)
+                this.display()
             })
         }
     }
