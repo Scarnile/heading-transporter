@@ -6,3 +6,21 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.hsp-heading-container {
+    background-color: var(--interactive-normal	);
+    padding: 1px 30px;
+    margin: 10px;
+}
+
+.hsp-heading-container:hover {
+    background-color: var(--interactive-hover);
+    
+}
+
+.hsp-heading {
+    /* color: red; */
+}
+
+.hsp-selected {
+    background-color: var(--interactive-accent);
+}

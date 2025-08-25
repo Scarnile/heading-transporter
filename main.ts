@@ -3,12 +3,14 @@ import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelector
 import { HeadingInfo} from 'heading';
 
 export interface HeadingTransporterSettings {
-	HeadingInfos: HeadingInfo[];
+	headingInfos: HeadingInfo[];
+	selectedHeadingIndex: number;
 	test: string;
 }
 
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
-	HeadingInfos: [],
+	headingInfos: [],
+	selectedHeadingIndex: 0,
 	test: "testString"
 }
 
@@ -41,7 +43,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 							this.settings.test = "A"
 
-							this.settings.HeadingInfos.push({headingName: headingName, path: path})
+							this.settings.headingInfos.push({headingName: headingName, path: path})
 							if (headingSelectorView) headingSelectorView.display()
 							await this.saveSettings()
 						});
@@ -60,12 +62,12 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
-			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this.settings)
+			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this)
 		)
 
 		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
 			this.activateView()
-			console.log(this.settings.HeadingInfos)
+			console.log(this.settings.headingInfos)
 		});
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
@@ -134,8 +136,8 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.test)
 				.onChange(async (value) => {
-					this.plugin.settings.HeadingInfos.push({headingName: "Test", path: ""});
-					this.plugin.settings.HeadingInfos[0].headingName = value;
+					this.plugin.settings.headingInfos.push({headingName: "Test", path: ""});
+					this.plugin.settings.headingInfos[0].headingName = value;
 					console.log(value)
 					await this.plugin.saveSettings();
 				}));
