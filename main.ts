@@ -34,11 +34,14 @@ export default class HeadingTransporterPlugin extends Plugin {
 			callback: () => {
 				console.log("Transported")
 				const editor = this.app.workspace.activeEditor?.editor
-
 				if (!editor) return
-				const selection = editor.getSelection()
+
+				const selection = getLineFromCursor(editor)
 				console.log(selection)
 				
+				if (this.settings.cutWithCommand) {
+					editor.setLine(editor.getCursor().line, "")
+				}
 			}
 		})
 
@@ -147,6 +150,19 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 
 		containerEl.empty();
+
+		new Setting(containerEl)
+			.setName("Cut With Command")
+			.setDesc("If you plan on cutting the text you want to transport, turn this on and set the command to Ctrl-X")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.cutWithCommand)
+					.onChange(async (value) => {
+						this.plugin.settings.cutWithCommand = value
+						await this.plugin.saveSettings()
+				}
+			)
+			})
 
 		new Setting(containerEl)
 			.setName('Setting #1')
