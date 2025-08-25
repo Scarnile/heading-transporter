@@ -1,6 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo} from 'heading';
+import { HeadingInfo, TransportToHeading} from 'heading';
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -32,13 +32,12 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				console.log("Transported")
 				const editor = this.app.workspace.activeEditor?.editor
 				if (!editor) return
 
 				const selection = getLineFromCursor(editor)
-				console.log(selection)
 				
+				TransportToHeading(selection, this.settings.headingInfos[this.settings.selectedHeadingIndex], this.app)
 				if (this.settings.cutWithCommand) {
 					editor.setLine(editor.getCursor().line, "")
 				}
