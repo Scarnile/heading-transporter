@@ -1,5 +1,6 @@
+import { App, Editor, TFile, Vault, Workspace } from "obsidian";
+
 import { HeadingTransporterSettings } from "main";
-import { App, TFile, Vault, Workspace } from "obsidian";
 
 export type HeadingInfo = {
     headingName: string;
@@ -10,12 +11,11 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
     const heading: HeadingInfo = {headingName: headingName, path: path}
     const headingInfos = settings.headingInfos
 
-    let isAlreadySaved: boolean = false
+    let isAlreadySaved = false
 
     // Check if heading to be saved is already saved
     for (let index = 0; index < headingInfos.length; index++) {
         if (headingInfos[index] == heading){
-            console.log("TURUE")
             isAlreadySaved = true
         }
     }
@@ -41,4 +41,41 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
         
     })
     
+}
+
+export const CheckHeadingExists = (headingInfo: HeadingInfo, vault: Vault) => {
+    console.log("A")
+    
+    const headingFile = vault.getFileByPath(headingInfo.path)
+    if (!headingFile) return
+    console.log("B")
+
+    vault.cachedRead(headingFile).then((fileContent) => {
+        const lineArray = fileContent.split("\n")
+
+        for (let lineIndex = 0; lineIndex < lineArray.length; lineIndex++) {
+            const line = lineArray[lineIndex]
+            console.log("C")
+
+
+            const isHeading = IsLineAHeading(line)
+            if (!isHeading) return
+            console.log("D")
+
+            const headingName = GetHeadingName(line)
+
+            if (line == headingName) {
+                console.log(headingName)
+                
+            }
+        }
+    })
+}
+
+export const IsLineAHeading = (lineContent: string) => {
+    return (lineContent.charAt(0) == "#") ? true : false
+}
+
+export const GetHeadingName = (lineContent: string) => {
+    return lineContent.slice(1).trim()
 }

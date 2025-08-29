@@ -1,6 +1,7 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf } from 'obsidian';
+import { CheckHeadingExists, GetHeadingName, HeadingInfo, IsLineAHeading, SaveHeading, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo, SaveHeading, TransportToHeading} from 'heading';
+
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -35,12 +36,27 @@ export default class HeadingTransporterPlugin extends Plugin {
 				const editor = this.app.workspace.activeEditor?.editor
 				if (!editor) return
 
+				const headingInfos = this.settings.headingInfos
+				const selectedHeadingIndex = this.settings.selectedHeadingIndex
+
 				const selection = getLineFromCursor(editor)
 				
-				TransportToHeading(selection, this.settings.headingInfos[this.settings.selectedHeadingIndex], this.app)
+				TransportToHeading(selection, headingInfos[selectedHeadingIndex], this.app)
 				if (this.settings.cutWithCommand) {
 					editor.setLine(editor.getCursor().line, "")
 				}
+			}
+		})
+
+		this.addCommand({
+			id: "check-heading-exists",
+			name: "Check Heading Exists",
+			callback: () => {
+				
+				for (let index = 0; index < this.settings.headingInfos.length; index++) {
+					CheckHeadingExists(this.settings.headingInfos[index], this.app.vault)
+				}
+				
 			}
 		})
 
@@ -49,7 +65,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 				const lineContent = getLineFromCursor(editor)
 
-				const isHeading = (lineContent.charAt(0) == "#") ? true : false
+				const isHeading = IsLineAHeading(lineContent)
 
 				if (isHeading) {
 					menu.addItem((item) => {
@@ -58,7 +74,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setIcon('document')
 						.onClick(async () => {	
 
-							const headingName = lineContent.slice(1).trim()
+							const headingName = GetHeadingName(lineContent)
 							const path = view.file?.path
 							if (!path) return
 
