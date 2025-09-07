@@ -44,31 +44,27 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 }
 
 export const CheckHeadingExists = (headingInfo: HeadingInfo, vault: Vault) => {
-    console.log("A")
     
     const headingFile = vault.getFileByPath(headingInfo.path)
     if (!headingFile) return
-    console.log("B")
 
     vault.cachedRead(headingFile).then((fileContent) => {
         const lineArray = fileContent.split("\n")
 
-        for (let lineIndex = 0; lineIndex < lineArray.length; lineIndex++) {
-            const line = lineArray[lineIndex]
-            console.log("C")
-
+        lineArray.forEach(line => {
 
             const isHeading = IsLineAHeading(line)
             if (!isHeading) return
-            console.log("D")
 
-            const headingName = GetHeadingName(line)
+            const headingName = headingInfo.headingName
+            const lineHeadingName = GetHeadingName(line)
 
-            if (line == headingName) {
-                console.log(headingName)
-                
-            }
-        }
+            if (lineHeadingName == headingName) {
+                console.log(lineHeadingName)
+            } 
+            
+        });
+
     })
 }
 
@@ -77,5 +73,5 @@ export const IsLineAHeading = (lineContent: string) => {
 }
 
 export const GetHeadingName = (lineContent: string) => {
-    return lineContent.slice(1).trim()
+    return lineContent.replace("#", "").trim()
 }

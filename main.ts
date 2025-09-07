@@ -14,7 +14,7 @@ export interface HeadingTransporterSettings {
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	headingInfos: [],
 	selectedHeadingIndex: 0,
-	cutWithCommand: false,
+	cutWithCommand: true,
 	test: "testString"
 }
 
@@ -101,7 +101,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this)
 		)
 
-		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('a-large-small', 'Heading Transporter', (evt: MouseEvent) => {
 			this.activateView()
 			console.log(this.settings.headingInfos)
 		});
