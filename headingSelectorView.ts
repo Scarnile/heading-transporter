@@ -71,6 +71,7 @@ export class HeadingSelectorView extends ItemView {
                         .onClick(() => {
                             console.log(this.settings.headingInfos[index])
                             this.settings.headingInfos.splice(index)
+                            this.plugin.saveSettings()
                             this.display()
                         })
                 }) 
