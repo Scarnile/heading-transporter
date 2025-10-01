@@ -24,6 +24,7 @@ If your plugin does not need CSS, delete this file.
 
 .hsp-selected {
     background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
 }
 
 .hsp-heading-container:hover.hsp-selected {
