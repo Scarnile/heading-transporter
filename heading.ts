@@ -1,4 +1,4 @@
-import { App, Editor, TFile, Vault, Workspace } from "obsidian";
+import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian";
 
 import { HeadingSelectorView } from "headingSelectorView";
 import { HeadingTransporterSettings } from "main";
@@ -7,6 +7,15 @@ import { resolve } from "path";
 export type HeadingInfo = {
     headingName: string;
     path: string;
+}
+
+export class HeadingSelectionContext {
+    constructor(
+        public headingInfos: HeadingInfo[],
+        public headingSelectorView: HeadingSelectorView,
+        public vault: Vault,
+        public settings: HeadingTransporterSettings
+    ) {}
 }
 
 export const SaveHeading = (headingName: string, path: string, settings: HeadingTransporterSettings) => {
@@ -34,7 +43,6 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
     const headingName = headingInfo.headingName
 
     if (!headingFile) return
-
 
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
