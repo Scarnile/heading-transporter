@@ -10,7 +10,6 @@ export type HeadingInfo = {
 
 export class HeadingSelectionContext {
     constructor(
-        public headingInfos: HeadingInfo[],
         public headingSelectorView: HeadingSelectorView,
         public vault: Vault,
         public settings: HeadingTransporterSettings,
@@ -57,10 +56,11 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 // Change to void
 export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
 
-    const headingInfos = headingSelectionContext.headingInfos
     const headingSelectorView = headingSelectionContext.headingSelectorView
     const vault = headingSelectionContext.vault
     const plugin = headingSelectionContext.plugin
+    const settings = headingSelectionContext.settings
+    const headingInfos = settings.headingInfos
 
     headingInfos.forEach(headingInfo => {
         let headingExists = false

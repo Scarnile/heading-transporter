@@ -25,11 +25,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
 		const vault = this.app.vault
-		const headingInfos = this.settings.headingInfos
 		const settings = this.settings
-
-		
-
 
 		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
 			
@@ -58,7 +54,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "check-heading-exists",
 			name: "Check Heading Exists",
 			callback: () => {
-				const headingSelectionContext = new HeadingSelectionContext(headingInfos, headingSelectorView, vault, settings, this)
+				const headingSelectionContext = new HeadingSelectionContext(headingSelectorView, vault, settings, this)
 				CheckHeadingExists(headingSelectionContext)	
 			}
 		})
@@ -95,8 +91,6 @@ export default class HeadingTransporterPlugin extends Plugin {
 				
 			})
 		);
-
-
 
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
