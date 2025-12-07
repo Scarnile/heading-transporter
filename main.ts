@@ -1,6 +1,7 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
+import { CheckHeadingExists, CheckHeadingExists2, CheckHeadingExistsTest, GetHeadingName, HeadingInfo, IndexHeadings, IsLineAHeading, SaveHeading, Test, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo} from 'heading';
+
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -13,7 +14,7 @@ export interface HeadingTransporterSettings {
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	headingInfos: [],
 	selectedHeadingIndex: 0,
-	cutWithCommand: false,
+	cutWithCommand: true,
 	test: "testString"
 }
 
@@ -23,6 +24,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
+		const vault = this.app.vault
 
 		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
 			
@@ -32,16 +34,27 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				console.log("Transported")
 				const editor = this.app.workspace.activeEditor?.editor
 				if (!editor) return
 
+				const headingInfos = this.settings.headingInfos
+				const selectedHeadingIndex = this.settings.selectedHeadingIndex
+
 				const selection = getLineFromCursor(editor)
-				console.log(selection)
 				
+				TransportToHeading(selection, headingInfos[selectedHeadingIndex], this.app)
 				if (this.settings.cutWithCommand) {
 					editor.setLine(editor.getCursor().line, "")
 				}
+			}
+		})
+
+		this.addCommand({
+			id: "check-heading-exists",
+			name: "Check Heading Exists",
+			callback: () => {
+				const headingInfos = this.settings.headingInfos
+				CheckHeadingExists(headingInfos, headingSelectorView, vault)	
 			}
 		})
 
@@ -50,7 +63,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 				const lineContent = getLineFromCursor(editor)
 
-				const isHeading = (lineContent.charAt(0) == "#") ? true : false
+				const isHeading = IsLineAHeading(lineContent)
 
 				if (isHeading) {
 					menu.addItem((item) => {
@@ -59,15 +72,14 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setIcon('document')
 						.onClick(async () => {	
 
-							const headingName = lineContent.slice(1).trim()
+							const headingName = GetHeadingName(lineContent)
 							const path = view.file?.path
 							if (!path) return
 
-							this.settings.test = "A"
-
-							this.settings.headingInfos.push({headingName: headingName, path: path})
+							SaveHeading(headingName, path, this.settings)
 							if (headingSelectorView) headingSelectorView.display()
 							await this.saveSettings()
+						
 						});
 					});
 				} else {
@@ -87,7 +99,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this)
 		)
 
-		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('a-large-small', 'Heading Transporter', (evt: MouseEvent) => {
 			this.activateView()
 			console.log(this.settings.headingInfos)
 		});
