@@ -1,8 +1,7 @@
 import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian";
+import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingSelectorView } from "headingSelectorView";
-import { HeadingTransporterSettings } from "main";
-import { resolve } from "path";
 
 export type HeadingInfo = {
     headingName: string;
@@ -14,7 +13,8 @@ export class HeadingSelectionContext {
         public headingInfos: HeadingInfo[],
         public headingSelectorView: HeadingSelectorView,
         public vault: Vault,
-        public settings: HeadingTransporterSettings
+        public settings: HeadingTransporterSettings,
+        public plugin: HeadingTransporterPlugin
     ) {}
 }
 
@@ -55,7 +55,12 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 }
 
 // Change to void
-export const CheckHeadingExists = (headingInfos: HeadingInfo[], headingSelectorView: HeadingSelectorView, vault: Vault) => {
+export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
+
+    const headingInfos = headingSelectionContext.headingInfos
+    const headingSelectorView = headingSelectionContext.headingSelectorView
+    const vault = headingSelectionContext.vault
+    const plugin = headingSelectionContext.plugin
 
     headingInfos.forEach(headingInfo => {
         let headingExists = false
@@ -86,6 +91,7 @@ export const CheckHeadingExists = (headingInfos: HeadingInfo[], headingSelectorV
                 console.log(headingInfo.headingName + " doesn't exist")
                 headingInfos.remove(headingInfo);
                 headingSelectorView.display();
+                plugin.saveSettings()
             }
     })
     })
