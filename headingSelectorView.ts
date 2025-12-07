@@ -1,6 +1,8 @@
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 import { ItemView, Menu, Notice, Setting, WorkspaceLeaf } from "obsidian"
 
+import { RemoveHeading } from "heading";
+
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
 export class HeadingSelectorView extends ItemView {
@@ -69,8 +71,7 @@ export class HeadingSelectorView extends ItemView {
                         .setTitle('Remove')
                         .setIcon('trash')
                         .onClick(() => {
-                            console.log(this.settings.headingInfos[index])
-                            this.settings.headingInfos.splice(index)
+                            RemoveHeading(this.settings.headingInfos, index)
                             this.plugin.saveSettings()
                             this.display()
                         })

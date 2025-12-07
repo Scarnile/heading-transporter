@@ -1,5 +1,5 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf } from 'obsidian';
-import { CheckHeadingExists, GetHeadingName, HeadingInfo, IsLineAHeading, SaveHeading, TransportToHeading } from 'heading';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
+import { CheckHeadingExists, CheckHeadingExists2, CheckHeadingExistsTest, GetHeadingName, HeadingInfo, IndexHeadings, IsLineAHeading, SaveHeading, Test, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
 
 import { getLineFromCursor } from 'getLineFromCursor';
@@ -24,6 +24,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
+		const vault = this.app.vault
 
 		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
 			
@@ -52,11 +53,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "check-heading-exists",
 			name: "Check Heading Exists",
 			callback: () => {
-				
-				for (let index = 0; index < this.settings.headingInfos.length; index++) {
-					CheckHeadingExists(this.settings.headingInfos[index], this.app.vault)
-				}
-				
+				const headingInfos = this.settings.headingInfos
+				CheckHeadingExists(headingInfos, headingSelectorView, vault)	
 			}
 		})
 

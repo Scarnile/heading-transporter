@@ -1,6 +1,8 @@
 import { App, Editor, TFile, Vault, Workspace } from "obsidian";
 
+import { HeadingSelectorView } from "headingSelectorView";
 import { HeadingTransporterSettings } from "main";
+import { resolve } from "path";
 
 export type HeadingInfo = {
     headingName: string;
@@ -33,6 +35,7 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 
     if (!headingFile) return
 
+
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
         
@@ -43,29 +46,45 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
     
 }
 
-export const CheckHeadingExists = (headingInfo: HeadingInfo, vault: Vault) => {
-    
-    const headingFile = vault.getFileByPath(headingInfo.path)
-    if (!headingFile) return
+// Change to void
+export const CheckHeadingExists = (headingInfos: HeadingInfo[], headingSelectorView: HeadingSelectorView, vault: Vault) => {
 
-    vault.cachedRead(headingFile).then((fileContent) => {
-        const lineArray = fileContent.split("\n")
+    headingInfos.forEach(headingInfo => {
+        let headingExists = false
+        const headingFile = vault.getFileByPath(headingInfo.path)
+        if (!headingFile) return null
 
-        lineArray.forEach(line => {
+        vault.cachedRead(headingFile).then((fileContent) => {
 
-            const isHeading = IsLineAHeading(line)
-            if (!isHeading) return
+            const settingHeadingName = headingInfo.headingName
+            const lineArray = fileContent.split("\n")
 
-            const headingName = headingInfo.headingName
-            const lineHeadingName = GetHeadingName(line)
+            lineArray.forEach(line => {
 
-            if (lineHeadingName == headingName) {
-                console.log(lineHeadingName)
-            } 
-            
-        });
+                const isHeading = IsLineAHeading(line)
+                if (!isHeading) return null
 
+                const lineHeadingName = GetHeadingName(line)
+
+                // If heading exists in the settings
+                if (lineHeadingName == settingHeadingName) {
+                    headingExists = true
+                }
+                
+            });
+
+            // Remove from settings if it doesn't exist
+            if(!headingExists) {
+                console.log(headingInfo.headingName + " doesn't exist")
+                headingInfos.remove(headingInfo);
+                headingSelectorView.display();
+            }
     })
+    })
+}
+
+export const RemoveHeading = (headingInfos: HeadingInfo[], index: number) => {
+    headingInfos.splice(index)
 }
 
 export const IsLineAHeading = (lineContent: string) => {
