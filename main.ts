@@ -25,11 +25,21 @@ export default class HeadingTransporterPlugin extends Plugin {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
 		const app = this.app
+		const headingInfos = this.settings.headingInfos
+		
+		// Gives the ability to give each saved heading a hotkey
+		for (let index = 0; index < headingInfos.length; index++) {
+			const headingName = headingInfos[index].headingName
 
-		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
-			
-		})
-
+			this.addCommand({
+				id: "transport-heading-" + index,
+				name: "Transport to " + headingName,
+				callback: () => {
+					
+				}
+			})
+		}
+		
 		this.addCommand({
 			id: "transport-heading",
 			name: "Transport Heading",
@@ -38,7 +48,6 @@ export default class HeadingTransporterPlugin extends Plugin {
 				if (!editor) return
 
 				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
-
 				const selection = getLineFromCursor(editor)
 				
 				TransportToHeading(selection, headingSelectionContext)
@@ -105,6 +114,9 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		this.addSettingTab(new HeadingTransporterSettingTab(this.app, this));
 
+		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
+			
+		})
 	}
 
 	onunload() {

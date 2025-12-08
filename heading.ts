@@ -35,13 +35,12 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, HeadingSelectionContext: HeadingSelectionContext) => {
+export const TransportToHeading = (value: string, headingSelectionContext: HeadingSelectionContext) => {
 
-    const settings = HeadingSelectionContext.plugin.settings
+    const settings = headingSelectionContext.plugin.settings
     const selectedHeadingIndex = settings.selectedHeadingIndex
     const headingInfo = settings.headingInfos[selectedHeadingIndex]
-    const app = HeadingSelectionContext.app 
-    const vault = app.vault
+    const vault = headingSelectionContext.app.vault
 
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.headingName
@@ -58,7 +57,6 @@ export const TransportToHeading = (value: string, HeadingSelectionContext: Headi
     
 }
 
-// Change to void
 export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
 
     const headingSelectorView = headingSelectionContext.headingSelectorView
