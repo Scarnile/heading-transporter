@@ -24,8 +24,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
-		const vault = this.app.vault
-		const settings = this.settings
+		const app = this.app
 
 		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
 			
@@ -38,12 +37,11 @@ export default class HeadingTransporterPlugin extends Plugin {
 				const editor = this.app.workspace.activeEditor?.editor
 				if (!editor) return
 
-				const headingInfos = this.settings.headingInfos
-				const selectedHeadingIndex = this.settings.selectedHeadingIndex
+				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
 
 				const selection = getLineFromCursor(editor)
 				
-				TransportToHeading(selection, headingInfos[selectedHeadingIndex], this.app)
+				TransportToHeading(selection, headingSelectionContext)
 				if (this.settings.cutWithCommand) {
 					editor.setLine(editor.getCursor().line, "")
 				}
@@ -54,7 +52,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "check-heading-exists",
 			name: "Check Heading Exists",
 			callback: () => {
-				const headingSelectionContext = new HeadingSelectionContext(headingSelectorView, vault, settings, this)
+				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
 				CheckHeadingExists(headingSelectionContext)	
 			}
 		})

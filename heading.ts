@@ -10,10 +10,9 @@ export type HeadingInfo = {
 
 export class HeadingSelectionContext {
     constructor(
+        public app: App,
+        public plugin: HeadingTransporterPlugin,
         public headingSelectorView: HeadingSelectorView,
-        public vault: Vault,
-        public settings: HeadingTransporterSettings,
-        public plugin: HeadingTransporterPlugin
     ) {}
 }
 
@@ -36,8 +35,14 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app: App) => {
+export const TransportToHeading = (value: string, HeadingSelectionContext: HeadingSelectionContext) => {
+
+    const settings = HeadingSelectionContext.plugin.settings
+    const selectedHeadingIndex = settings.selectedHeadingIndex
+    const headingInfo = settings.headingInfos[selectedHeadingIndex]
+    const app = HeadingSelectionContext.app 
     const vault = app.vault
+
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.headingName
 
@@ -57,9 +62,9 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
 
     const headingSelectorView = headingSelectionContext.headingSelectorView
-    const vault = headingSelectionContext.vault
+    const vault = headingSelectionContext.app.vault
     const plugin = headingSelectionContext.plugin
-    const settings = headingSelectionContext.settings
+    const settings = headingSelectionContext.plugin.settings
     const headingInfos = settings.headingInfos
 
     headingInfos.forEach(headingInfo => {
