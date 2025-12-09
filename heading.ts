@@ -2,6 +2,7 @@ import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingSelectorView } from "headingSelectorView";
+import { getLineFromCursor } from "getLineFromCursor";
 
 export type HeadingInfo = {
     headingName: string;
@@ -35,13 +36,17 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, HeadingSelectionContext: HeadingSelectionContext) => {
+export const TransportToHeading = (selectedHeadingIndex: number, headingSelectionContext: HeadingSelectionContext) => {
 
-    const settings = HeadingSelectionContext.plugin.settings
-    const selectedHeadingIndex = settings.selectedHeadingIndex
+    const app = headingSelectionContext.app
+    const editor = app.workspace.activeEditor?.editor
+    if (!editor) return
+
+    const selection = getLineFromCursor(editor)
+
+    const settings = headingSelectionContext.plugin.settings
     const headingInfo = settings.headingInfos[selectedHeadingIndex]
-    const app = HeadingSelectionContext.app 
-    const vault = app.vault
+    const vault = headingSelectionContext.app.vault
 
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.headingName
@@ -51,14 +56,18 @@ export const TransportToHeading = (value: string, HeadingSelectionContext: Headi
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
         
-        const updatedFileContent = fileContent.slice(0, headingPosition) + "\n" + value + fileContent.slice(headingPosition)
+        const updatedFileContent = fileContent.slice(0, headingPosition) + "\n" + selection + fileContent.slice(headingPosition)
         vault.modify(headingFile, updatedFileContent)
         
     })
+
+    //Cut content of line to transport
+    if (settings.cutWithCommand) {
+        editor.setLine(editor.getCursor().line, "")
+    }
     
 }
 
-// Change to void
 export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
 
     const headingSelectorView = headingSelectionContext.headingSelectorView
