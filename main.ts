@@ -50,7 +50,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
 				const selection = getLineFromCursor(editor)
 				
-				TransportToHeading(selection, headingSelectionContext)
+				const selectedHeadingIndex = this.settings.selectedHeadingIndex
+				TransportToHeading(selection, selectedHeadingIndex, headingSelectionContext)
 				if (this.settings.cutWithCommand) {
 					editor.setLine(editor.getCursor().line, "")
 				}

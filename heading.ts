@@ -35,10 +35,9 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, headingSelectionContext: HeadingSelectionContext) => {
+export const TransportToHeading = (value: string, selectedHeadingIndex: number, headingSelectionContext: HeadingSelectionContext) => {
 
     const settings = headingSelectionContext.plugin.settings
-    const selectedHeadingIndex = settings.selectedHeadingIndex
     const headingInfo = settings.headingInfos[selectedHeadingIndex]
     const vault = headingSelectionContext.app.vault
 
