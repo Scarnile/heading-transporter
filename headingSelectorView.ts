@@ -1,5 +1,5 @@
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
-import { ItemView, Setting, WorkspaceLeaf } from "obsidian"
+import { ItemView, Menu, Setting, WorkspaceLeaf } from "obsidian"
 
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
@@ -7,7 +7,6 @@ export class HeadingSelectorView extends ItemView {
 
     plugin: HeadingTransporterPlugin
     settings: HeadingTransporterSettings
-
 
     constructor(leaf: WorkspaceLeaf, plugin: HeadingTransporterPlugin) {
         super(leaf);
@@ -36,11 +35,11 @@ export class HeadingSelectorView extends ItemView {
         const container = this.contentEl;
         container.empty();
         
-        container.createEl('h2', { text: 'Heading Selector'});
         
+        // Make a container for each headingInfo
         for (let index = 0; index < this.settings.headingInfos.length; index++) {
             const headingContainer = container.createEl('div', {cls: "hsp-heading-container"})
-            headingContainer.createEl('h6', { text: this.settings.headingInfos[index].headingName,
+            headingContainer.createEl('p', { text: this.settings.headingInfos[index].headingName,
                 cls: "hsp-heading"});
 
             // Color heading when selected only
