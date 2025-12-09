@@ -2,6 +2,7 @@ import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingSelectorView } from "headingSelectorView";
+import { getLineFromCursor } from "getLineFromCursor";
 
 export type HeadingInfo = {
     headingName: string;
@@ -35,7 +36,13 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, selectedHeadingIndex: number, headingSelectionContext: HeadingSelectionContext) => {
+export const TransportToHeading = (selectedHeadingIndex: number, headingSelectionContext: HeadingSelectionContext) => {
+
+    const app = headingSelectionContext.app
+    const editor = app.workspace.activeEditor?.editor
+    if (!editor) return
+
+    const selection = getLineFromCursor(editor)
 
     const settings = headingSelectionContext.plugin.settings
     const headingInfo = settings.headingInfos[selectedHeadingIndex]
@@ -49,10 +56,15 @@ export const TransportToHeading = (value: string, selectedHeadingIndex: number, 
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
         
-        const updatedFileContent = fileContent.slice(0, headingPosition) + "\n" + value + fileContent.slice(headingPosition)
+        const updatedFileContent = fileContent.slice(0, headingPosition) + "\n" + selection + fileContent.slice(headingPosition)
         vault.modify(headingFile, updatedFileContent)
         
     })
+
+    //Cut content of line to transport
+    if (settings.cutWithCommand) {
+        editor.setLine(editor.getCursor().line, "")
+    }
     
 }
 

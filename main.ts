@@ -35,7 +35,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 				id: "transport-heading-" + index,
 				name: "Transport to " + headingName,
 				callback: () => {
-					
+					const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
+					TransportToHeading(index, headingSelectionContext)
 				}
 			})
 		}
@@ -44,17 +45,9 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				const editor = this.app.workspace.activeEditor?.editor
-				if (!editor) return
-
 				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
-				const selection = getLineFromCursor(editor)
-				
 				const selectedHeadingIndex = this.settings.selectedHeadingIndex
-				TransportToHeading(selection, selectedHeadingIndex, headingSelectionContext)
-				if (this.settings.cutWithCommand) {
-					editor.setLine(editor.getCursor().line, "")
-				}
+				TransportToHeading(selectedHeadingIndex, headingSelectionContext)
 			}
 		})
 		
