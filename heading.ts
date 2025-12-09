@@ -1,12 +1,19 @@
-import { App, Editor, TFile, Vault, Workspace } from "obsidian";
+import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian";
+import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingSelectorView } from "headingSelectorView";
-import { HeadingTransporterSettings } from "main";
-import { resolve } from "path";
 
 export type HeadingInfo = {
     headingName: string;
     path: string;
+}
+
+export class HeadingSelectionContext {
+    constructor(
+        public app: App,
+        public plugin: HeadingTransporterPlugin,
+        public headingSelectorView: HeadingSelectorView,
+    ) {}
 }
 
 export const SaveHeading = (headingName: string, path: string, settings: HeadingTransporterSettings) => {
@@ -28,13 +35,18 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app: App) => {
+export const TransportToHeading = (value: string, HeadingSelectionContext: HeadingSelectionContext) => {
+
+    const settings = HeadingSelectionContext.plugin.settings
+    const selectedHeadingIndex = settings.selectedHeadingIndex
+    const headingInfo = settings.headingInfos[selectedHeadingIndex]
+    const app = HeadingSelectionContext.app 
     const vault = app.vault
+
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.headingName
 
     if (!headingFile) return
-
 
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
@@ -47,7 +59,13 @@ export const TransportToHeading = (value: string, headingInfo: HeadingInfo, app:
 }
 
 // Change to void
-export const CheckHeadingExists = (headingInfos: HeadingInfo[], headingSelectorView: HeadingSelectorView, vault: Vault) => {
+export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
+
+    const headingSelectorView = headingSelectionContext.headingSelectorView
+    const vault = headingSelectionContext.app.vault
+    const plugin = headingSelectionContext.plugin
+    const settings = headingSelectionContext.plugin.settings
+    const headingInfos = settings.headingInfos
 
     headingInfos.forEach(headingInfo => {
         let headingExists = false
@@ -78,6 +96,7 @@ export const CheckHeadingExists = (headingInfos: HeadingInfo[], headingSelectorV
                 console.log(headingInfo.headingName + " doesn't exist")
                 headingInfos.remove(headingInfo);
                 headingSelectorView.display();
+                plugin.saveSettings()
             }
     })
     })
