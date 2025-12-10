@@ -1,5 +1,5 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
-import { CheckHeadingExists, GetHeadingName, HeadingInfo, HeadingSelectionContext, IsLineAHeading, SaveHeading, TransportToHeading } from 'heading';
+import { CheckHeadingExists, GetHeadingName, HeadingInfo, IsLineAHeading, MoveHeadingSelection, PluginContext, SaveHeading, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
 
 import { getLineFromCursor } from 'getLineFromCursor';
@@ -35,8 +35,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 				id: "transport-heading-" + index,
 				name: "Transport to " + headingName,
 				callback: () => {
-					const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
-					TransportToHeading(index, headingSelectionContext)
+					const pluginContext = new PluginContext(app, this, headingSelectorView)
+					TransportToHeading(index, pluginContext)
 				}
 			})
 		}
@@ -45,9 +45,9 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
+				const pluginContext = new PluginContext(app, this, headingSelectorView)
 				const selectedHeadingIndex = this.settings.selectedHeadingIndex
-				TransportToHeading(selectedHeadingIndex, headingSelectionContext)
+				TransportToHeading(selectedHeadingIndex, pluginContext)
 			}
 		})
 
@@ -55,7 +55,17 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id:"move-heading-selection-up",
 			name: "Move heading selection up",
 			callback: () => {
-				
+				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				MoveHeadingSelection(-1, pluginContext)
+			}
+		})
+
+		this.addCommand({
+			id:"move-heading-selection-down",
+			name: "Move heading selection down",
+			callback: () => {
+				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				MoveHeadingSelection(1, pluginContext)
 			}
 		})
 		
@@ -63,8 +73,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "check-heading-exists",
 			name: "Check Heading Exists",
 			callback: () => {
-				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
-				CheckHeadingExists(headingSelectionContext)	
+				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				CheckHeadingExists(pluginContext)	
 			}
 		})
 

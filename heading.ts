@@ -9,7 +9,7 @@ export type HeadingInfo = {
     path: string;
 }
 
-export class HeadingSelectionContext {
+export class PluginContext {
     constructor(
         public app: App,
         public plugin: HeadingTransporterPlugin,
@@ -36,17 +36,17 @@ export const SaveHeading = (headingName: string, path: string, settings: Heading
 
 }
 
-export const TransportToHeading = (selectedHeadingIndex: number, headingSelectionContext: HeadingSelectionContext) => {
+export const TransportToHeading = (selectedHeadingIndex: number, pluginContext: PluginContext) => {
 
-    const app = headingSelectionContext.app
+    const app = pluginContext.app
     const editor = app.workspace.activeEditor?.editor
     if (!editor) return
 
     const selection = getLineFromCursor(editor)
 
-    const settings = headingSelectionContext.plugin.settings
+    const settings = pluginContext.plugin.settings
     const headingInfo = settings.headingInfos[selectedHeadingIndex]
-    const vault = headingSelectionContext.app.vault
+    const vault = pluginContext.app.vault
 
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.headingName
@@ -68,12 +68,26 @@ export const TransportToHeading = (selectedHeadingIndex: number, headingSelectio
     
 }
 
-export const CheckHeadingExists = (headingSelectionContext: HeadingSelectionContext) => {
+export const MoveHeadingSelection = (indexShift: number, pluginContext: PluginContext) => {
+    const settings = pluginContext.plugin.settings
+    let settingHeadingIndex = settings.selectedHeadingIndex
+    const headingInfosLength = settings.headingInfos.length
+    const newHeadingIndex = settingHeadingIndex += indexShift
+    
+    // console.log(headingInfosLength)
+    if (newHeadingIndex < 0 || newHeadingIndex >= headingInfosLength) return
+    
+    settings.selectedHeadingIndex += indexShift
+    pluginContext.headingSelectorView.display()
+    pluginContext.plugin.saveData(settings);
+}
 
-    const headingSelectorView = headingSelectionContext.headingSelectorView
-    const vault = headingSelectionContext.app.vault
-    const plugin = headingSelectionContext.plugin
-    const settings = headingSelectionContext.plugin.settings
+export const CheckHeadingExists = (pluginContext: PluginContext) => {
+
+    const headingSelectorView = pluginContext.headingSelectorView
+    const vault = pluginContext.app.vault
+    const plugin = pluginContext.plugin
+    const settings = pluginContext.plugin.settings
     const headingInfos = settings.headingInfos
 
     headingInfos.forEach(headingInfo => {
