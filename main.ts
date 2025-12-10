@@ -1,6 +1,7 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, WorkspaceLeaf} from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
+import { CheckHeadingExists, GetHeadingName, HeadingInfo, HeadingSelectionContext, IsLineAHeading, SaveHeading, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingInfo} from 'heading';
+
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -13,7 +14,7 @@ export interface HeadingTransporterSettings {
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	headingInfos: [],
 	selectedHeadingIndex: 0,
-	cutWithCommand: false,
+	cutWithCommand: true,
 	test: "testString"
 }
 
@@ -23,25 +24,47 @@ export default class HeadingTransporterPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		let headingSelectorView: HeadingSelectorView
+		const app = this.app
+		const headingInfos = this.settings.headingInfos
+		
+		// Gives the ability to give each saved heading a hotkey
+		for (let index = 0; index < headingInfos.length; index++) {
+			const headingName = headingInfos[index].headingName
 
-		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
-			
-		})
-
+			this.addCommand({
+				id: "transport-heading-" + index,
+				name: "Transport to " + headingName,
+				callback: () => {
+					const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
+					TransportToHeading(index, headingSelectionContext)
+				}
+			})
+		}
+		
 		this.addCommand({
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				console.log("Transported")
-				const editor = this.app.workspace.activeEditor?.editor
-				if (!editor) return
+				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
+				const selectedHeadingIndex = this.settings.selectedHeadingIndex
+				TransportToHeading(selectedHeadingIndex, headingSelectionContext)
+			}
+		})
 
-				const selection = getLineFromCursor(editor)
-				console.log(selection)
+		this.addCommand({
+			id:"move-heading-selection-up",
+			name: "Move heading selection up",
+			callback: () => {
 				
-				if (this.settings.cutWithCommand) {
-					editor.setLine(editor.getCursor().line, "")
-				}
+			}
+		})
+		
+		this.addCommand({
+			id: "check-heading-exists",
+			name: "Check Heading Exists",
+			callback: () => {
+				const headingSelectionContext = new HeadingSelectionContext(app, this, headingSelectorView)
+				CheckHeadingExists(headingSelectionContext)	
 			}
 		})
 
@@ -49,8 +72,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			this.app.workspace.on("editor-menu", (menu, editor, view) => {
 
 				const lineContent = getLineFromCursor(editor)
-
-				const isHeading = (lineContent.charAt(0) == "#") ? true : false
+				const isHeading = IsLineAHeading(lineContent)
 
 				if (isHeading) {
 					menu.addItem((item) => {
@@ -59,15 +81,14 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setIcon('document')
 						.onClick(async () => {	
 
-							const headingName = lineContent.slice(1).trim()
+							const headingName = GetHeadingName(lineContent)
 							const path = view.file?.path
 							if (!path) return
 
-							this.settings.test = "A"
-
-							this.settings.headingInfos.push({headingName: headingName, path: path})
+							SaveHeading(headingName, path, this.settings)
 							if (headingSelectorView) headingSelectorView.display()
 							await this.saveSettings()
+						
 						});
 					});
 				} else {
@@ -80,14 +101,12 @@ export default class HeadingTransporterPlugin extends Plugin {
 			})
 		);
 
-
-
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
 			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this)
 		)
 
-		const ribbonIconEl = this.addRibbonIcon('apple', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('a-large-small', 'Heading Transporter', (evt: MouseEvent) => {
 			this.activateView()
 			console.log(this.settings.headingInfos)
 		});
@@ -97,6 +116,9 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		this.addSettingTab(new HeadingTransporterSettingTab(this.app, this));
 
+		this.registerDomEvent(document, "cut", (evt: ClipboardEvent) => {
+			
+		})
 	}
 
 	onunload() {
