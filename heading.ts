@@ -3,10 +3,17 @@ import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingSelectorView } from "headingSelectorView";
 import { getLineFromCursor } from "getLineFromCursor";
+import { v4 as uuidv4 } from "uuid";
 
 export type HeadingInfo = {
+    id: string;
     headingName: string;
     path: string;
+}
+
+export type HeadingCategory = {
+    categoryName: string;
+    headingInfos: HeadingInfo[];
 }
 
 export class PluginContext {
@@ -17,8 +24,16 @@ export class PluginContext {
     ) {}
 }
 
+export const createHeadingInfo = (name: string, path: string):HeadingInfo => {
+    return {
+        id: uuidv4(),
+        headingName: name,
+        path
+    }
+}
+
 export const SaveHeading = (headingName: string, path: string, settings: HeadingTransporterSettings) => {
-    const heading: HeadingInfo = {headingName: headingName, path: path}
+    const heading = createHeadingInfo(headingName, path)
     const headingInfos = settings.headingInfos
 
     let isAlreadySaved = false

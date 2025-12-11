@@ -18,6 +18,8 @@ export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	test: "testString"
 }
 
+
+
 export default class HeadingTransporterPlugin extends Plugin {
 	settings: HeadingTransporterSettings;
 
@@ -203,7 +205,6 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.test)
 				.onChange(async (value) => {
-					this.plugin.settings.headingInfos.push({headingName: "Test", path: ""});
 					this.plugin.settings.headingInfos[0].headingName = value;
 					console.log(value)
 					await this.plugin.saveSettings();
