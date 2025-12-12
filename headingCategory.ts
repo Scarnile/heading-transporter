@@ -20,7 +20,18 @@ export const addHeadingCategory = (name: string, settings: HeadingTransporterSet
 }
 
 export class HeadingCategoryManager {
-    private categories: Map<string, HeadingInfo[]> = new Map()
+
+    // Heading Category ID returns the IDs of the headingInfos inside
+    private categories: Map<string, string[]> = new Map()
+
+    // Convert initial data to a map
+    constructor(initialData?: HeadingCategory[]) {
+        if (initialData) {
+            for (const category of initialData) {
+                this.categories.set(category.id, category.headingIds)          
+            }
+        }
+    }
 
     addCategory(categoryName: string, ...headingIds: string[]): HeadingCategory {
 
@@ -29,7 +40,7 @@ export class HeadingCategoryManager {
             categoryName,
             headingIds,
         }
-
+        this.categories
         return info
     }
 }
