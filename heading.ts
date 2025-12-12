@@ -11,11 +11,6 @@ export type HeadingInfo = {
     path: string;
 }
 
-export type HeadingCategory = {
-    categoryName: string;
-    headingInfos: HeadingInfo[];
-}
-
 export class PluginContext {
     constructor(
         public app: App,

@@ -1,10 +1,12 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
 import { CheckHeadingExists, GetHeadingName, HeadingInfo, IsLineAHeading, MoveHeadingSelection, PluginContext, SaveHeading, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
+import { HeadingCategory, addHeadingCategory } from 'headingCategory';
 
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
+	headingCategories: HeadingCategory[];
 	headingInfos: HeadingInfo[];
 	selectedHeadingIndex: number;
 	cutWithCommand: boolean;
@@ -12,6 +14,7 @@ export interface HeadingTransporterSettings {
 }
 
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
+	headingCategories: [],
 	headingInfos: [],
 	selectedHeadingIndex: 0,
 	cutWithCommand: true,
@@ -77,6 +80,15 @@ export default class HeadingTransporterPlugin extends Plugin {
 			callback: () => {
 				const pluginContext = new PluginContext(app, this, headingSelectorView)
 				CheckHeadingExists(pluginContext)	
+			}
+		})
+
+		this.addCommand({
+			id: "add-heading-category",
+			name: "Add Heading Category",
+			callback: () => {
+				addHeadingCategory("Category Name", this.settings, "dbf8525f-7ffc-4e79-9642-c42294e65308")
+				this.saveData(this.settings)
 			}
 		})
 
