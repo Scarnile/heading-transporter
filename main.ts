@@ -21,8 +21,6 @@ export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	test: "testString"
 }
 
-
-
 export default class HeadingTransporterPlugin extends Plugin {
 	settings: HeadingTransporterSettings
 	categoryManager: HeadingCategoryManager
@@ -90,7 +88,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "add-heading-category",
 			name: "Add Heading Category",
 			callback: () => {
-				addHeadingCategory("Category Name", this.settings, "dbf8525f-7ffc-4e79-9642-c42294e65308")
+				this.categoryManager.addCategory("Lala")
+				this.settings.headingCategories = this.categoryManager.serialize()
 				this.saveData(this.settings)
 			}
 		})

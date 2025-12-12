@@ -40,7 +40,8 @@ export class HeadingCategoryManager {
             categoryName,
             headingIds,
         }
-        this.categories
+        this.categories.set(info.id, info)
+        
         return info
     }
 
