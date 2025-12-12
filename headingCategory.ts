@@ -21,14 +21,14 @@ export const addHeadingCategory = (name: string, settings: HeadingTransporterSet
 
 export class HeadingCategoryManager {
 
-    // Heading Category ID returns the IDs of the headingInfos inside
-    private categories: Map<string, string[]> = new Map()
+    // Heading Category ID returns the HeadingCategory object
+    private categories: Map<string, HeadingCategory> = new Map()
 
     // Convert initial data to a map
     constructor(initialData?: HeadingCategory[]) {
         if (initialData) {
             for (const category of initialData) {
-                this.categories.set(category.id, category.headingIds)          
+                this.categories.set(category.id, category)          
             }
         }
     }
@@ -42,5 +42,9 @@ export class HeadingCategoryManager {
         }
         this.categories
         return info
+    }
+
+    serialize(): HeadingCategory[] {
+        return [...this.categories.values()]
     }
 }

@@ -1,7 +1,7 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
 import { CheckHeadingExists, GetHeadingName, HeadingInfo, IsLineAHeading, MoveHeadingSelection, PluginContext, SaveHeading, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingCategory, addHeadingCategory } from 'headingCategory';
+import { HeadingCategory, HeadingCategoryManager, addHeadingCategory } from 'headingCategory';
 
 import { getLineFromCursor } from 'getLineFromCursor';
 
@@ -24,11 +24,14 @@ export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 
 
 export default class HeadingTransporterPlugin extends Plugin {
-	settings: HeadingTransporterSettings;
+	settings: HeadingTransporterSettings
+	categoryManager: HeadingCategoryManager
 
 	async onload() {
 		await this.loadSettings();
+		this.categoryManager = new HeadingCategoryManager(this.settings.headingCategories)
 		let headingSelectorView: HeadingSelectorView
+		
 		const app = this.app
 		const headingInfos = this.settings.headingInfos
 		
