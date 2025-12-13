@@ -90,9 +90,26 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "add-heading-category",
 			name: "Add Heading Category",
 			callback: () => {
-				this.categoryManager.addCategory("Lala")
+				this.categoryManager.addCategory("Category 1", "af47a89c-540d-4b14-9a6d-0b9a18dd680b")
+				this.categoryManager.addCategory("Category 2", "361fc7e5-0207-4cc0-8707-c894024ef84f")
 				this.settings.headingCategories = this.categoryManager.serialize()
 				this.saveData(this.settings)
+			}
+		})
+
+		this.addCommand({
+			id: "display-headings-in-category",
+			name: "Display Headings in Category",
+			callback: () => {
+				const headingsIds = this.categoryManager.getHeadingIdsFromCategory("dfba3dbb-3147-4441-8698-640f64058e10")
+
+				if (!headingsIds) return
+
+				headingsIds?.forEach((headingId) => {
+					const headingName = this.headingManager.getHeadingNameFromID(headingId)
+					console.log(headingName)
+				})
+
 			}
 		})
 
@@ -202,6 +219,12 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 
 		containerEl.empty();
+
+		this.plugin.headingManager.serialize().forEach((heading) => {
+			new Setting(containerEl)
+			.setName(heading.headingName)
+			
+		})
 
 		new Setting(containerEl)
 			.setName("Cut With Command")

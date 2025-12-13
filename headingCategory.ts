@@ -9,16 +9,6 @@ export type HeadingCategory = {
     headingIds: string[];
 }
 
-export const addHeadingCategory = (name: string, settings: HeadingTransporterSettings, ...headingIds: string[]) => {
-    const newCategory: HeadingCategory = {
-        id: uuidv4(),
-        categoryName: name,
-        headingIds: headingIds
-    }
-
-    settings.headingCategories.push(newCategory)
-}
-
 export class HeadingCategoryManager {
 
     // Heading Category ID returns the HeadingCategory object
@@ -43,6 +33,14 @@ export class HeadingCategoryManager {
         this.categories.set(info.id, info)
         
         return info
+    }
+
+    getHeadingIdsFromCategory(categoryId: string): string[] | undefined {
+        return this.categories.get(categoryId)?.headingIds
+    }
+
+    addHeadingToCategory(headingId: string, category: HeadingCategory) {
+        this.categories.get(category.id)?.headingIds.push(headingId)
     }
 
     serialize(): HeadingCategory[] {
