@@ -31,40 +31,41 @@ export class HeadingManager {
         }
     }
 
-    serialize(): HeadingInfo[] {
-        return [...this.headings.values()]
-    }
-}
-
-export const createHeadingInfo = (name: string, path: string):HeadingInfo => {
-    return {
-        id: uuidv4(),
-        headingName: name,
-        path
-    }
-}
-
-export const getHeadingNameFromID = (headingId: string, savedHeadings: HeadingInfo[]) => {
-    
-}
-
-export const SaveHeading = (headingName: string, path: string, settings: HeadingTransporterSettings) => {
-    const heading = createHeadingInfo(headingName, path)
-    const headingInfos = settings.headingInfos
-
-    let isAlreadySaved = false
-
-    // Check if heading to be saved is already saved
-    for (let index = 0; index < headingInfos.length; index++) {
-        if (headingInfos[index] == heading){
-            isAlreadySaved = true
+    createHeadingInfo = (name: string, path: string):HeadingInfo => {
+        return {
+            id: uuidv4(),
+            headingName: name,
+            path
         }
     }
 
-    if (isAlreadySaved == false) {
-        headingInfos.push(heading)
+    saveHeading = (headingName: string, path: string) => {
+        const heading = this.createHeadingInfo(headingName, path)
+
+        let isAlreadySaved = false
+
+        // Check if heading to be saved is already saved
+        // for (let index = 0; index < this.headings.size; index++) {
+        //     if (this.headings[index] == heading){
+        //         isAlreadySaved = true
+        //     }
+        // }
+
+        if (isAlreadySaved == false) {
+            this.headings.set(heading.id, heading)
+        }
+
     }
 
+    getHeadingNameFromID = (headingId: string) => {
+        return this.headings.get(headingId)?.headingName
+    }
+
+    serialize(): HeadingInfo[] {
+        return [...this.headings.values()]
+    }
+
+    
 }
 
 export const TransportToHeading = (selectedHeadingIndex: number, pluginContext: PluginContext) => {
