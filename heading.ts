@@ -19,12 +19,33 @@ export class PluginContext {
     ) {}
 }
 
+export class HeadingManager {
+    private headings: Map<string, HeadingInfo> = new Map()
+
+    // Convert initial data to a map
+    constructor(initialData?: HeadingInfo[]) {
+        if (initialData) {
+            for(const heading of initialData) {
+                this.headings.set(heading.id, heading)
+            }
+        }
+    }
+
+    serialize(): HeadingInfo[] {
+        return [...this.headings.values()]
+    }
+}
+
 export const createHeadingInfo = (name: string, path: string):HeadingInfo => {
     return {
         id: uuidv4(),
         headingName: name,
         path
     }
+}
+
+export const getHeadingNameFromID = (headingId: string, savedHeadings: HeadingInfo[]) => {
+    
 }
 
 export const SaveHeading = (headingName: string, path: string, settings: HeadingTransporterSettings) => {
