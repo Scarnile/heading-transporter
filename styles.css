@@ -19,3 +19,21 @@
 .hsp-selected {
     background-color: var(--nav-item-background-active);
 }
+
+.hsp-dropdown {
+    width: 100%;
+    display: block;
+}
+
+.hsp-dropdown .setting-item-info {
+    display: none;
+}
+
+.hsp-dropdown .setting-item-control{
+    justify-content: flex-start;
+}
+
+.hsp-dropdown .dropdown {
+    width: 100%;
+    box-shadow: none;
+}

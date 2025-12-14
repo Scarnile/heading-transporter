@@ -49,13 +49,15 @@ export class HeadingSelectorView extends ItemView {
                 this.settings.selectedCategoryId = value
                 this.display()
             })
-        })
+        }).setClass("hsp-dropdown")
         
-        if (!headings) return
-        this.displayHeadings(headings, container)
+        if (headings) {
+            this.displayHeadings(headings, container)
+            
+        }
     }
  
-    displayHeadings(headings: HeadingInfo[], container: HTMLElement) {
+    displayHeadings(headings: HeadingInfo[]| null , container: HTMLElement) {
         // Make a container for each headingInfo
         for (let index = 0; index < headings.length; index++) {
             
