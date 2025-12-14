@@ -57,8 +57,8 @@ export class HeadingManager {
 
     }
 
-    getHeadingNameFromID = (headingId: string) => {
-        return this.headings.get(headingId)?.headingName
+    getHeadingFromID = (id: string) => {
+        return this.headings.get(id)
     }
 
     serialize(): HeadingInfo[] {

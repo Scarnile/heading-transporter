@@ -101,15 +101,10 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "display-headings-in-category",
 			name: "Display Headings in Category",
 			callback: () => {
-				const headingsIds = this.categoryManager.getHeadingIdsFromCategory("dfba3dbb-3147-4441-8698-640f64058e10")
-
-				if (!headingsIds) return
-
-				headingsIds?.forEach((headingId) => {
-					const headingName = this.headingManager.getHeadingNameFromID(headingId)
-					console.log(headingName)
+				const headings = this.getHeadingsFromCategory("2026de07-dc9e-4703-b31f-49ec34f7f5e9")
+				headings?.forEach((heading) => {
+					console.log(heading.headingName)
 				})
-
 			}
 		})
 
@@ -203,6 +198,17 @@ export default class HeadingTransporterPlugin extends Plugin {
 		await this.saveData(this.settings);
 		console.log("Saved Settings")
 	}
+
+	getHeadingsFromCategory(categoryId: string) {
+		const headingsIds = this.categoryManager.getHeadingIdsFromCategory(categoryId)
+
+		if (headingsIds) {
+			return headingsIds
+				.map(id => this.headingManager.getHeadingFromID(id))
+				.filter((h): h is HeadingInfo => !!h)
+		}
+
+	}
 }
 
 
@@ -252,3 +258,4 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 				}));
 	}
 }
+
