@@ -37,6 +37,13 @@ export class HeadingSelectorView extends ItemView {
         const container = this.contentEl;
         container.empty();
         
+        new Setting(container).addDropdown((dropdown) => {
+            const headingCategories = this.settings.headingCategories
+            headingCategories.forEach((headingCategory) => {
+                dropdown.addOption("option1", headingCategory.categoryName)
+            })
+            
+        })
         
         // Make a container for each headingInfo
         for (let index = 0; index < this.settings.headingInfos.length; index++) {
