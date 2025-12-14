@@ -1,7 +1,6 @@
+import { HeadingInfo, RemoveHeading } from "heading";
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 import { ItemView, Menu, Notice, Setting, WorkspaceLeaf } from "obsidian"
-
-import { RemoveHeading } from "heading";
 
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
@@ -34,9 +33,12 @@ export class HeadingSelectorView extends ItemView {
 
     async display() {
 
+        const headings = this.plugin.getHeadingsFromCategory(this.settings.selectedCategoryId)
+
         const container = this.contentEl;
         container.empty();
-        
+
+        // Add dropdown
         new Setting(container).addDropdown((dropdown) => {
             const headingCategories = this.settings.headingCategories
             headingCategories.forEach((headingCategory) => {
@@ -44,20 +46,18 @@ export class HeadingSelectorView extends ItemView {
             })
             
             dropdown.onChange((value) => {
-                const headings = this.plugin.getHeadingsFromCategory(value)
-                if (!headings) return
-                
-                headings.forEach(heading => {
-                    console.log(heading.headingName)
-                })
+                // headings = this.plugin.getHeadingsFromCategory(value)
+                this.settings.selectedCategoryId = value
+                this.display()
             })
         })
         
+        if (!headings) return
         // Make a container for each headingInfo
-        for (let index = 0; index < this.settings.headingInfos.length; index++) {
+        for (let index = 0; index < headings.length; index++) {
             
             const headingContainer = container.createEl('div', {cls: "hsp-heading-container"})
-            headingContainer.createEl('p', { text: this.settings.headingInfos[index].headingName,
+            headingContainer.createEl('p', { text: headings[index].headingName,
                 cls: "hsp-heading"});
 
             // Color heading when selected only
@@ -85,7 +85,7 @@ export class HeadingSelectorView extends ItemView {
                         .setTitle('Remove')
                         .setIcon('trash')
                         .onClick(() => {
-                            RemoveHeading(this.settings.headingInfos, index)
+                            RemoveHeading(headings, index)
                             this.plugin.saveSettings()
                             this.display()
                         })

@@ -8,7 +8,7 @@ import { getLineFromCursor } from 'getLineFromCursor';
 export interface HeadingTransporterSettings {
 	headingCategories: HeadingCategory[];
 	headingInfos: HeadingInfo[];
-	selectedCategoryIndex: number;
+	selectedCategoryId: string;
 	selectedHeadingIndex: number;
 	cutWithCommand: boolean;
 	test: string;
@@ -17,7 +17,7 @@ export interface HeadingTransporterSettings {
 export const DEFAULT_SETTINGS: HeadingTransporterSettings = {
 	headingCategories: [],
 	headingInfos: [],
-	selectedCategoryIndex: 0,
+	selectedCategoryId: "",
 	selectedHeadingIndex: 0,
 	cutWithCommand: true,
 	test: "testString"
