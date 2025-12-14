@@ -46,13 +46,16 @@ export class HeadingSelectorView extends ItemView {
             })
             
             dropdown.onChange((value) => {
-                // headings = this.plugin.getHeadingsFromCategory(value)
                 this.settings.selectedCategoryId = value
                 this.display()
             })
         })
         
         if (!headings) return
+        this.displayHeadings(headings, container)
+    }
+ 
+    displayHeadings(headings: HeadingInfo[], container: HTMLElement) {
         // Make a container for each headingInfo
         for (let index = 0; index < headings.length; index++) {
             
