@@ -40,24 +40,31 @@ export class HeadingSelectorView extends ItemView {
 
         // Add dropdown
         new Setting(container).addDropdown((dropdown) => {
+            
+            // Load the dropdown options with the saved categories
             const headingCategories = this.settings.headingCategories
             headingCategories.forEach((headingCategory) => {
                 dropdown.addOption(headingCategory.id, headingCategory.categoryName)
             })
             
-            dropdown.onChange((value) => {
+            dropdown.setValue(this.settings.selectedCategoryId)
+            dropdown.onChange(async (value) => {
                 this.settings.selectedCategoryId = value
                 this.display()
+                await this.plugin.saveSettings()
             })
         }).setClass("hsp-dropdown")
         
+        console.log(headings)
+
         if (headings) {
             this.displayHeadings(headings, container)
-            
-        }
+            console.log("A")
+        } 
+        
     }
  
-    displayHeadings(headings: HeadingInfo[]| null , container: HTMLElement) {
+    displayHeadings(headings: HeadingInfo[]|[] , container: HTMLElement) {
         // Make a container for each headingInfo
         for (let index = 0; index < headings.length; index++) {
             

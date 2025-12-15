@@ -198,7 +198,6 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		console.log("Saved Settings")
 	}
 
 	getHeadingsFromCategory(categoryId: string) {
