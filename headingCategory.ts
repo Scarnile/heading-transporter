@@ -35,6 +35,18 @@ export class HeadingCategoryManager {
         return info
     }
 
+    getCategorizedHeadingIds(): Set<string> {
+        const result = new Set<string>
+
+         for (const category of this.categories.values()) {
+            category.headingIds.forEach((headingId) => {
+                result.add(headingId)
+            })
+        }
+
+        return result
+    }
+
     getHeadingIdsFromCategory(categoryId: string): string[] | undefined {
         return this.categories.get(categoryId)?.headingIds
     }

@@ -110,6 +110,15 @@ export default class HeadingTransporterPlugin extends Plugin {
 			}
 		})
 
+		this.addCommand({
+			id: "hsp-test-command",
+			name: "HSP Test Command",
+			callback: () => {
+				const categorized = this.categoryManager.getCategorizedHeadingIds()
+				console.log(categorized)
+			}
+		})
+
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu, editor, view) => {
 
