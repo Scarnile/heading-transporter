@@ -240,7 +240,7 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		containerEl.createEl("h1", {text: "Categories"})
 		this.plugin.categoryManager.serialize().forEach((category) => {
 			new Setting(containerEl)
-			.setName(category.categoryName)
+			.setName(category.name)
 			.addButton((button) => {
 				button.setIcon("plus")
 			})

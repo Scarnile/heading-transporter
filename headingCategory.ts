@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export type HeadingCategory = {
     id: string;
-    categoryName: string;
+    name: string;
     headingIds: string[];
 }
 
@@ -23,11 +23,11 @@ export class HeadingCategoryManager {
         }
     }
 
-    addCategory(categoryName: string, ...headingIds: string[]): HeadingCategory {
+    addCategory(name: string, ...headingIds: string[]): HeadingCategory {
 
         const info: HeadingCategory = {
             id: uuidv4(),
-            categoryName,
+            name,
             headingIds,
         }
         this.categories.set(info.id, info)

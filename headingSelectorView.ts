@@ -44,7 +44,7 @@ export class HeadingSelectorView extends ItemView {
             // Load the dropdown options with the saved categories
             const headingCategories = this.settings.headingCategories
             headingCategories.forEach((headingCategory) => {
-                dropdown.addOption(headingCategory.id, headingCategory.categoryName)
+                dropdown.addOption(headingCategory.id, headingCategory.name)
             })
             
             dropdown.setValue(this.settings.selectedCategoryId)
