@@ -227,12 +227,15 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.plugin.headingManager.serialize().forEach((heading) => {
+		// Display all heading categories
+		containerEl.createEl("h1", {text: "Categories"})
+		this.plugin.categoryManager.serialize().forEach((category) => {
 			new Setting(containerEl)
-			.setName(heading.headingName)
-			
+			.setName(category.categoryName)
 		})
 
+
+		containerEl.createEl("h1", {text: "Settings"})
 		new Setting(containerEl)
 			.setName("Cut With Command")
 			.setDesc("If you plan on cutting the text you want to transport, turn this on and set the command to Ctrl-X")
