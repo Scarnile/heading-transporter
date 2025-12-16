@@ -232,6 +232,9 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		this.plugin.categoryManager.serialize().forEach((category) => {
 			new Setting(containerEl)
 			.setName(category.categoryName)
+			.addButton((button) => {
+				button.setIcon("plus")
+			})
 		})
 
 
