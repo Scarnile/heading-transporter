@@ -114,8 +114,8 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "hsp-test-command",
 			name: "HSP Test Command",
 			callback: () => {
-				const categorized = this.categoryManager.getCategorizedHeadingIds()
-				console.log(categorized)
+				const uncategorized = this.getUncategorizedHeadings()
+				console.log(uncategorized)
 			}
 		})
 
@@ -218,6 +218,13 @@ export default class HeadingTransporterPlugin extends Plugin {
 				.filter((h): h is HeadingInfo => !!h)
 		}
 
+	}
+
+	getUncategorizedHeadings(): HeadingInfo[] {
+		const categorized = this.categoryManager.getCategorizedHeadingIds()
+		const allHeadings = this.headingManager.serialize()
+		const uncategorized = allHeadings.filter(h => !categorized.has(h.id))
+		return uncategorized
 	}
 }
 
