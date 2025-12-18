@@ -3,6 +3,7 @@ import { CheckHeadingExists, GetHeadingName, HeadingInfo, HeadingManager, IsLine
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
 import { HeadingCategory, HeadingCategoryManager, addHeadingCategory } from 'headingCategory';
 
+import { CategorySelectionModal } from 'categorySelectionModal';
 import { getLineFromCursor } from 'getLineFromCursor';
 
 export interface HeadingTransporterSettings {
@@ -114,8 +115,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "hsp-test-command",
 			name: "HSP Test Command",
 			callback: () => {
-				const uncategorized = this.getUncategorizedHeadings()
-				console.log(uncategorized)
+				new CategorySelectionModal(this.app, this).open()
 			}
 		})
 
