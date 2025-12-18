@@ -143,6 +143,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 							await this.saveSettings()
 						
 						});
+					
 					});
 				} else {
 					new Notice("Not a heading")
@@ -248,7 +249,11 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		categories.forEach((category) => {
 			containerEl.createEl("h1", {text: category.name})
 			const headings = this.plugin.getHeadingsFromCategory(category.id)
-			if (headings) {
+			
+
+			if (headings?.length == 0) {
+				containerEl.createEl("p", {text: "This category has no headings"})
+			} else if (headings) {
 				headings.forEach((heading) => {
 					new Setting(containerEl)
 					.setName(heading.headingName)
