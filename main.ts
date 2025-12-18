@@ -137,7 +137,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 							if (!path) return
 
 							this.headingManager.saveHeading(headingName, path)
-							this.settings.headingInfos = this.headingManager.serialize()
+							this.settings.headingInfos = this.headingManager.getAllHeadings()
 
 							if (headingSelectorView) headingSelectorView.display()
 							await this.saveSettings()
@@ -223,7 +223,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 	getUncategorizedHeadings(): HeadingInfo[] {
 		const categorized = this.categoryManager.getCategorizedHeadingIds()
-		const allHeadings = this.headingManager.serialize()
+		const allHeadings = this.headingManager.getAllHeadings()
 		const uncategorized = allHeadings.filter(h => !categorized.has(h.id))
 		return uncategorized
 	}

@@ -59,7 +59,7 @@ export class HeadingManager {
         return this.headings.get(id)
     }
 
-    serialize(): HeadingInfo[] {
+    getAllHeadings(): HeadingInfo[] {
         return [...this.headings.values()]
     }
 
