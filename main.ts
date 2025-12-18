@@ -39,7 +39,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 		
 		// Gives the ability to give each saved heading a hotkey
 		for (let index = 0; index < headingInfos.length; index++) {
-			const headingName = headingInfos[index].headingName
+			const headingName = headingInfos[index].name
 
 			this.addCommand({
 				id: "transport-heading-" + index,
@@ -105,7 +105,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			callback: () => {
 				const headings = this.getHeadingsFromCategory("2026de07-dc9e-4703-b31f-49ec34f7f5e9")
 				headings?.forEach((heading) => {
-					console.log(heading.headingName)
+					console.log(heading.name)
 				})
 			}
 		})
@@ -256,7 +256,7 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 			} else if (headings) {
 				headings.forEach((heading) => {
 					new Setting(containerEl)
-					.setName(heading.headingName)
+					.setName(heading.name)
 					.addButton((button) => {
 						button.setIcon("plus")
 					})
@@ -269,7 +269,7 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		const uncategorized = this.plugin.getUncategorizedHeadings()
 		uncategorized.forEach((heading) => {
 			new Setting(containerEl)
-			.setName(heading.headingName)
+			.setName(heading.name)
 			.addButton((button) => {
 				button.setIcon("plus")
 			})
@@ -296,7 +296,7 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.test)
 				.onChange(async (value) => {
-					this.plugin.settings.headingInfos[0].headingName = value;
+					this.plugin.settings.headingInfos[0].name = value;
 					console.log(value)
 					await this.plugin.saveSettings();
 				}));

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export type HeadingInfo = {
     id: string;
-    headingName: string;
+    name: string;
     path: string;
 }
 
@@ -34,7 +34,7 @@ export class HeadingManager {
     createHeadingInfo = (name: string, path: string):HeadingInfo => {
         return {
             id: uuidv4(),
-            headingName: name,
+            name,
             path
         }
     }
@@ -79,7 +79,7 @@ export const TransportToHeading = (selectedHeadingIndex: number, pluginContext: 
     const vault = pluginContext.app.vault
 
     const headingFile = vault.getFileByPath(headingInfo.path)
-    const headingName = headingInfo.headingName
+    const headingName = headingInfo.name
 
     if (!headingFile) return
 
@@ -127,7 +127,7 @@ export const CheckHeadingExists = (pluginContext: PluginContext) => {
 
         vault.cachedRead(headingFile).then((fileContent) => {
 
-            const settingHeadingName = headingInfo.headingName
+            const settingHeadingName = headingInfo.name
             const lineArray = fileContent.split("\n")
 
             lineArray.forEach(line => {
@@ -146,7 +146,7 @@ export const CheckHeadingExists = (pluginContext: PluginContext) => {
 
             // Remove from settings if it doesn't exist
             if(!headingExists) {
-                console.log(headingInfo.headingName + " doesn't exist")
+                console.log(headingInfo.name + " doesn't exist")
                 headingInfos.remove(headingInfo);
                 headingSelectorView.display();
                 plugin.saveSettings()

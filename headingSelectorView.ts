@@ -66,7 +66,7 @@ export class HeadingSelectorView extends ItemView {
         for (let index = 0; index < headings.length; index++) {
             
             const headingContainer = container.createEl('div', {cls: "hsp-heading-container"})
-            headingContainer.createEl('p', { text: headings[index].headingName,
+            headingContainer.createEl('p', { text: headings[index].name,
                 cls: "hsp-heading"});
 
             // Color heading when selected only
