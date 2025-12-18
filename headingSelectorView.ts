@@ -33,7 +33,7 @@ export class HeadingSelectorView extends ItemView {
 
     async display() {
 
-        const headings = this.plugin.getHeadingsFromCategory(this.settings.selectedCategoryId)
+        const headingsToDisplay = this.plugin.getHeadingsFromCategory(this.settings.selectedCategoryId)
 
         const container = this.contentEl;
         container.empty();
@@ -55,11 +55,8 @@ export class HeadingSelectorView extends ItemView {
             })
         }).setClass("hsp-dropdown")
         
-        console.log(headings)
-
-        if (headings) {
-            this.displayHeadings(headings, container)
-            console.log("A")
+        if (headingsToDisplay) {
+            this.displayHeadings(headingsToDisplay, container)
         } 
         
     }

@@ -240,19 +240,35 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 
 	display(): void {
 		const {containerEl} = this;
-
 		containerEl.empty();
 
+		const categories = this.plugin.categoryManager.serialize()
+
 		// Display all heading categories
-		containerEl.createEl("h1", {text: "Categories"})
-		this.plugin.categoryManager.serialize().forEach((category) => {
+		categories.forEach((category) => {
+			containerEl.createEl("h1", {text: category.name})
+			const headings = this.plugin.getHeadingsFromCategory(category.id)
+			if (headings) {
+				headings.forEach((heading) => {
+					new Setting(containerEl)
+					.setName(heading.headingName)
+					.addButton((button) => {
+						button.setIcon("plus")
+					})
+				})
+			}
+		})
+
+		// Display Uncategorized Headings
+		containerEl.createEl("h1", {text: "Uncategorized"})
+		const uncategorized = this.plugin.getUncategorizedHeadings()
+		uncategorized.forEach((heading) => {
 			new Setting(containerEl)
-			.setName(category.name)
+			.setName(heading.headingName)
 			.addButton((button) => {
 				button.setIcon("plus")
 			})
 		})
-
 
 		containerEl.createEl("h1", {text: "Settings"})
 		new Setting(containerEl)
