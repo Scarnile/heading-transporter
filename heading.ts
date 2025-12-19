@@ -41,18 +41,8 @@ export class HeadingManager {
 
     saveHeading = (headingName: string, path: string) => {
         const heading = this.createHeadingInfo(headingName, path)
-
-        // let isAlreadySaved = false
-
-        // Check if heading to be saved is already saved
-        // for (let index = 0; index < this.headings.size; index++) {
-        //     if (this.headings[index] == heading){
-        //         isAlreadySaved = true
-        //     }
-        // }
-
         this.headings.set(heading.id, heading)
-
+        return heading
     }
 
     getHeadingFromID = (id: string) => {

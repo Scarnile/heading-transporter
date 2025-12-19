@@ -1,15 +1,20 @@
 import { App, Notice, SuggestModal } from "obsidian";
+import { HeadingCategory, HeadingCategoryManager } from "headingCategory";
 
-import { HeadingCategory } from "headingCategory";
 import HeadingTransporterPlugin from "main";
+import { PluginContext } from "heading";
 
 export class CategorySelectionModal extends SuggestModal<HeadingCategory> {
 
-	plugin: HeadingTransporterPlugin;
+	headingId: string
+	plugin: HeadingTransporterPlugin
+	categoryManager: HeadingCategoryManager
 
-	constructor(app: App, plugin: HeadingTransporterPlugin) {
-		super(app);
-		this.plugin = plugin
+	constructor(headingId: string, pluginContext: PluginContext) {
+		super(pluginContext.app)
+		this.headingId = headingId
+		this.plugin = pluginContext.plugin
+		this.categoryManager = pluginContext.plugin.categoryManager
 	}
 
 	// Returns all available suggestions.
@@ -28,7 +33,7 @@ export class CategorySelectionModal extends SuggestModal<HeadingCategory> {
 
 	// Perform action on the selected suggestion.
 	onChooseSuggestion(category: HeadingCategory, evt: MouseEvent | KeyboardEvent) {
-		new Notice(`Selected ${category.name}`);
+		this.categoryManager.addHeadingToCategory(this.headingId, category)
 	}
 }
 

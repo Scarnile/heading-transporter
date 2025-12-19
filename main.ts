@@ -115,7 +115,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "hsp-test-command",
 			name: "HSP Test Command",
 			callback: () => {
-				new CategorySelectionModal(this.app, this).open()
+				
 			}
 		})
 
@@ -131,17 +131,21 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setTitle('Add to Heading Selector')
 						.setIcon('document')
 						.onClick(async () => {	
-
+							const pluginContext = new PluginContext(app, this, headingSelectorView)
+							
 							const headingName = GetHeadingName(lineContent)
 							const path = view.file?.path
 							if (!path) return
+							
+							const headingInfo = this.headingManager.saveHeading(headingName, path)
 
-							this.headingManager.saveHeading(headingName, path)
+							new CategorySelectionModal(headingInfo.id, pluginContext).open()
+
+							// Save and Display
 							this.settings.headingInfos = this.headingManager.getAllHeadings()
+							await this.saveSettings()
 
 							if (headingSelectorView) headingSelectorView.display()
-							await this.saveSettings()
-						
 						});
 					
 					});
