@@ -36,6 +36,10 @@ export class HeadingCategoryManager {
         return info
     }
 
+    getCategoryById(id: string) {
+        return this.categories.get(id)
+    }
+
     getCategorizedHeadingIds(): Set<string> {
         const result = new Set<string>
 

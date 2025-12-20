@@ -80,10 +80,16 @@ export class HeadingSelectorView extends ItemView {
 
             headingContainer.addEventListener("click", () => {
                 // Select heading when clicked
-                this.settings.selectedHeadingIndex = index
+
+                const selectedHeadingId = headings[index].id
+                const selectedCategoryId = this.settings.selectedCategoryId
+                const category = this.plugin.categoryManager.getCategoryById(selectedCategoryId)
+                if (!category) return
+                category.selectedHeadingId = selectedHeadingId
+                
+                console.log(category.selectedHeadingId)
                 headingContainer.addClass("hsp-selected")
                 this.plugin.saveSettings()
-                console.log(this.settings.selectedHeadingIndex)
                 this.display()
             })
 
