@@ -115,7 +115,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "hsp-test-command",
 			name: "HSP Test Command",
 			callback: () => {
-				
+				this.activateView()
 			}
 		})
 

@@ -7,6 +7,7 @@ export type HeadingCategory = {
     id: string;
     name: string;
     headingIds: string[];
+    selectedHeadingId?: string;
 }
 
 export class HeadingCategoryManager {
