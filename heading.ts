@@ -58,25 +58,22 @@ export class HeadingManager {
 
 export const TransportToHeading = (selectedHeadingId: number, pluginContext: PluginContext) => {
 
-    const app = pluginContext.app
-    const editor = app.workspace.activeEditor?.editor
+    const {app, plugin} = pluginContext
+    const {vault, workspace} = app
+    const {settings, categoryManager} = plugin
+    const {headingInfos, selectedCategoryId} = settings
+
+    const editor = workspace.activeEditor?.editor
     if (!editor) return
 
-    const settings = pluginContext.plugin.settings
-    const headingInfo = settings.headingInfos[selectedHeadingId]
-    const vault = pluginContext.app.vault
-
+    const headingInfo = headingInfos[selectedHeadingId]
     const headingFile = vault.getFileByPath(headingInfo.path)
     const headingName = headingInfo.name
 
     if (!headingFile) return
 
-    const selectedCategoryId = pluginContext.plugin.settings.selectedCategoryId
-
-    const headingIds = pluginContext.plugin.categoryManager.getHeadingIdsFromCategory(selectedCategoryId)
-
+    const headingIds = categoryManager.getHeadingIdsFromCategory(selectedCategoryId)
     const selection = getLineFromCursor(editor)
-
 
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
