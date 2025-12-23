@@ -1,7 +1,7 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault, WorkspaceLeaf } from 'obsidian';
 import { CheckHeadingExists, GetHeadingName, HeadingInfo, HeadingManager, IsLineAHeading, MoveHeadingSelection, PluginContext, TransportToHeading } from 'heading';
 import { HEADING_SELECTOR_VIEW_TYPE, HeadingSelectorView } from 'headingSelectorView';
-import { HeadingCategory, HeadingCategoryManager, addHeadingCategory } from 'headingCategory';
+import { HeadingCategory, HeadingCategoryManager } from 'headingCategory';
 
 import { CategorySelectionModal } from 'categorySelectionModal';
 import { getLineFromCursor } from 'getLineFromCursor';

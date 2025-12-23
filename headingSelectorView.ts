@@ -2,6 +2,8 @@ import { HeadingInfo, RemoveHeading } from "heading";
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 import { ItemView, Menu, Notice, Setting, WorkspaceLeaf } from "obsidian"
 
+import { HeadingCategory } from "headingCategory";
+
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
 export class HeadingSelectorView extends ItemView {
@@ -32,7 +34,7 @@ export class HeadingSelectorView extends ItemView {
     }
 
     async display() {
-
+        const currentCategory = this.plugin.categoryManager.getCategoryById(this.settings.selectedCategoryId)
         const headingsToDisplay = this.plugin.getHeadingsFromCategory(this.settings.selectedCategoryId)
 
         const container = this.contentEl;
@@ -55,13 +57,13 @@ export class HeadingSelectorView extends ItemView {
             })
         }).setClass("hsp-dropdown")
         
-        if (headingsToDisplay) {
-            this.displayHeadings(headingsToDisplay, container)
+        if (headingsToDisplay && currentCategory) {
+            this.displayHeadings(headingsToDisplay, currentCategory, container)
         } 
         
     }
  
-    displayHeadings(headings: HeadingInfo[]|[] , container: HTMLElement) {
+    displayHeadings(headings: HeadingInfo[]|[], category: HeadingCategory ,container: HTMLElement) {
         // Make a container for each headingInfo
         for (let index = 0; index < headings.length; index++) {
             
@@ -70,7 +72,8 @@ export class HeadingSelectorView extends ItemView {
                 cls: "hsp-heading"});
 
             // Color heading when selected only
-            if (index == this.settings.selectedHeadingIndex) {
+            
+            if (headings[index].id == category.selectedHeadingId) {
                 headingContainer.addClass("hsp-selected")
             } else {
                 if (headingContainer.classList.contains("hsp-selected")) {
@@ -82,9 +85,7 @@ export class HeadingSelectorView extends ItemView {
                 // Select heading when clicked
 
                 const selectedHeadingId = headings[index].id
-                const selectedCategoryId = this.settings.selectedCategoryId
-                const category = this.plugin.categoryManager.getCategoryById(selectedCategoryId)
-                if (!category) return
+                
                 category.selectedHeadingId = selectedHeadingId
                 
                 console.log(category.selectedHeadingId)
