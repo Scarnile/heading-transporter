@@ -231,6 +231,10 @@ export default class HeadingTransporterPlugin extends Plugin {
 		const uncategorized = allHeadings.filter(h => !categorized.has(h.id))
 		return uncategorized
 	}
+
+	getById<T extends {id: string}>(items: T[], id: string): T | undefined {
+		return items.find((item) => item.id === id)
+	}
 }
 
 

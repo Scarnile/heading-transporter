@@ -1,6 +1,7 @@
 import { App, Editor, PluginSettingTab, TFile, Vault, Workspace } from "obsidian";
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
+import { BaseManager } from "baseManager";
 import { HeadingSelectorView } from "headingSelectorView";
 import { getLineFromCursor } from "getLineFromCursor";
 import { v4 as uuidv4 } from "uuid";
@@ -19,11 +20,12 @@ export class PluginContext {
     ) {}
 }
 
-export class HeadingManager {
+export class HeadingManager extends BaseManager<HeadingInfo>{
     private headings: Map<string, HeadingInfo> = new Map()
 
     // Convert initial data to a map
     constructor(initialData?: HeadingInfo[]) {
+        super();
         if (initialData) {
             for(const heading of initialData) {
                 this.headings.set(heading.id, heading)

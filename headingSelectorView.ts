@@ -67,12 +67,12 @@ export class HeadingSelectorView extends ItemView {
         // Make a container for each headingInfo
         for (let index = 0; index < headings.length; index++) {
             
+            // Create a display for the heading
             const headingContainer = container.createEl('div', {cls: "hsp-heading-container"})
             headingContainer.createEl('p', { text: headings[index].name,
                 cls: "hsp-heading"});
 
             // Color heading when selected only
-            
             if (headings[index].id == category.selectedHeadingId) {
                 headingContainer.addClass("hsp-selected")
             } else {
@@ -81,11 +81,9 @@ export class HeadingSelectorView extends ItemView {
                 }
             }
 
+            // Select heading when clicked
             headingContainer.addEventListener("click", () => {
-                // Select heading when clicked
-
                 const selectedHeadingId = headings[index].id
-                
                 category.selectedHeadingId = selectedHeadingId
                 
                 console.log(category.selectedHeadingId)

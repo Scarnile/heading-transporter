@@ -2,6 +2,7 @@ import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 
 import { HeadingInfo } from "heading";
 import { v4 as uuidv4 } from "uuid";
+import { BaseManager } from "baseManager";
 
 export type HeadingCategory = {
     id: string;
@@ -10,13 +11,14 @@ export type HeadingCategory = {
     selectedHeadingId?: string;
 }
 
-export class HeadingCategoryManager {
+export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
 
     // Heading Category ID returns the HeadingCategory object
     private categories: Map<string, HeadingCategory> = new Map()
 
     // Convert initial data to a map
     constructor(initialData?: HeadingCategory[]) {
+        super()
         if (initialData) {
             for (const category of initialData) {
                 this.categories.set(category.id, category)          
@@ -32,7 +34,6 @@ export class HeadingCategoryManager {
             headingIds,
         }
         this.categories.set(info.id, info)
-        
         return info
     }
 
