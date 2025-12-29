@@ -21,19 +21,18 @@ export class PluginContext {
 }
 
 export class HeadingManager extends BaseManager<HeadingInfo>{
-    private headings: Map<string, HeadingInfo> = new Map()
 
     // Convert initial data to a map
     constructor(initialData?: HeadingInfo[]) {
         super();
         if (initialData) {
             for(const heading of initialData) {
-                this.headings.set(heading.id, heading)
+                this.items.set(heading.id, heading)
             }
         }
     }
 
-    createHeadingInfo = (name: string, path: string):HeadingInfo => {
+    createHeadingInfo = (name: string, path: string): HeadingInfo => {
         return {
             id: uuidv4(),
             name,
@@ -43,16 +42,12 @@ export class HeadingManager extends BaseManager<HeadingInfo>{
 
     saveHeading = (headingName: string, path: string) => {
         const heading = this.createHeadingInfo(headingName, path)
-        this.headings.set(heading.id, heading)
+        this.items.set(heading.id, heading)
         return heading
     }
 
-    getHeadingFromID = (id: string) => {
-        return this.headings.get(id)
-    }
-
     getAllHeadings(): HeadingInfo[] {
-        return [...this.headings.values()]
+        return [...this.items.values()]
     }
 
     

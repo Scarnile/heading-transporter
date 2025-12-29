@@ -14,14 +14,13 @@ export type HeadingCategory = {
 export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
 
     // Heading Category ID returns the HeadingCategory object
-    private categories: Map<string, HeadingCategory> = new Map()
 
     // Convert initial data to a map
     constructor(initialData?: HeadingCategory[]) {
         super()
         if (initialData) {
             for (const category of initialData) {
-                this.categories.set(category.id, category)          
+                this.items.set(category.id, category)          
             }
         }
     }
@@ -33,20 +32,16 @@ export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
             name,
             headingIds,
         }
-        this.categories.set(info.id, info)
+        this.items.set(info.id, info)
         return info
-    }
-
-    getCategoryById(id: string) {
-        return this.categories.get(id)
     }
 
     getCategorizedHeadingIds(): Set<string> {
         const result = new Set<string>
 
-         for (const category of this.categories.values()) {
-            category.headingIds.forEach((headingId) => {
-                result.add(headingId)
+            for (const category of this.items.values()) {
+                category.headingIds.forEach((headingId) => {
+                    result.add(headingId)
             })
         }
 
@@ -54,14 +49,15 @@ export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
     }
 
     getHeadingIdsFromCategory(categoryId: string): string[] | undefined {
-        return this.categories.get(categoryId)?.headingIds
+        this.getById
+        return this.items.get(categoryId)?.headingIds
     }
 
     addHeadingToCategory(headingId: string, category: HeadingCategory) {
-        this.categories.get(category.id)?.headingIds.push(headingId)
+        this.items.get(category.id)?.headingIds.push(headingId)
     }
 
     serialize(): HeadingCategory[] {
-        return [...this.categories.values()]
+        return [...this.items.values()]
     }
 }

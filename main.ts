@@ -219,7 +219,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		if (headingsIds) {
 			return headingsIds
-				.map(id => this.headingManager.getHeadingFromID(id))
+				.map(id => this.headingManager.getById(id))
 				.filter((h): h is HeadingInfo => !!h)
 		}
 

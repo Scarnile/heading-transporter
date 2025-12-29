@@ -1,8 +1,7 @@
+import { HeadingCategory, HeadingCategoryManager } from "headingCategory";
 import { HeadingInfo, RemoveHeading } from "heading";
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
 import { ItemView, Menu, Notice, Setting, WorkspaceLeaf } from "obsidian"
-
-import { HeadingCategory } from "headingCategory";
 
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
@@ -34,12 +33,14 @@ export class HeadingSelectorView extends ItemView {
     }
 
     async display() {
-        const currentCategory = this.plugin.categoryManager.getCategoryById(this.settings.selectedCategoryId)
-        const headingsToDisplay = this.plugin.getHeadingsFromCategory(this.settings.selectedCategoryId)
+        const selectedCategoryId = this.settings.selectedCategoryId
+        const currentCategory = this.plugin.categoryManager.getById(selectedCategoryId)
+        const headingsToDisplay = this.plugin.getHeadingsFromCategory(selectedCategoryId)
 
         const container = this.contentEl;
         container.empty();
 
+        console.log(currentCategory?.name)
         // Add dropdown
         new Setting(container).addDropdown((dropdown) => {
             
@@ -86,7 +87,7 @@ export class HeadingSelectorView extends ItemView {
                 const selectedHeadingId = headings[index].id
                 category.selectedHeadingId = selectedHeadingId
                 
-                console.log(category.selectedHeadingId)
+                // console.log(category.selectedHeadingId)
                 headingContainer.addClass("hsp-selected")
                 this.plugin.saveSettings()
                 this.display()
