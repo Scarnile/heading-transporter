@@ -22,16 +22,6 @@ export class PluginContext {
 
 export class HeadingManager extends BaseManager<HeadingInfo>{
 
-    // Convert initial data to a map
-    constructor(initialData?: HeadingInfo[]) {
-        super();
-        if (initialData) {
-            for(const heading of initialData) {
-                this.items.set(heading.id, heading)
-            }
-        }
-    }
-
     createHeadingInfo = (name: string, path: string): HeadingInfo => {
         return {
             id: uuidv4(),
@@ -63,7 +53,6 @@ export const TransportToHeading = (pluginContext: PluginContext) => {
     const editor = workspace.activeEditor?.editor
     if (!editor) return
 
-    // Work
     const selectedCategory = categoryManager.getById(selectedCategoryId)
     if (!selectedCategory?.selectedHeadingId) return
     
@@ -74,12 +63,8 @@ export const TransportToHeading = (pluginContext: PluginContext) => {
     if (!headingFile) return
     
     const headingName = headingInfo.name
-    console.log(headingInfo.name)
-    
-    // Selected Category > Selected Heading > Heading Manager get by id
-
     const selection = getLineFromCursor(editor)
-
+    
     vault.read(headingFile).then((fileContent) => {
         const headingPosition = fileContent.search("# " + headingName) + headingName.length + 2
         

@@ -15,16 +15,6 @@ export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
 
     // Heading Category ID returns the HeadingCategory object
 
-    // Convert initial data to a map
-    constructor(initialData?: HeadingCategory[]) {
-        super()
-        if (initialData) {
-            for (const category of initialData) {
-                this.items.set(category.id, category)          
-            }
-        }
-    }
-
     addCategory(name: string, ...headingIds: string[]): HeadingCategory {
 
         const info: HeadingCategory = {
