@@ -57,8 +57,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			name: "Transport Heading",
 			callback: () => {
 				const pluginContext = new PluginContext(app, this, headingSelectorView)
-				const selectedHeadingIndex = this.settings.selectedHeadingIndex
-				TransportToHeading(selectedHeadingIndex, pluginContext)
+				TransportToHeading(pluginContext)
 			}
 		})
 

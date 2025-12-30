@@ -53,23 +53,31 @@ export class HeadingManager extends BaseManager<HeadingInfo>{
     
 }
 
-export const TransportToHeading = (selectedHeadingId: number, pluginContext: PluginContext) => {
+export const TransportToHeading = (pluginContext: PluginContext) => {
 
     const {app, plugin} = pluginContext
     const {vault, workspace} = app
-    const {settings, categoryManager} = plugin
-    const {headingInfos, selectedCategoryId} = settings
+    const {settings, categoryManager, headingManager} = plugin
+    const {selectedCategoryId} = settings
 
     const editor = workspace.activeEditor?.editor
     if (!editor) return
 
-    const headingInfo = headingInfos[selectedHeadingId]
+    // Work
+    const selectedCategory = categoryManager.getById(selectedCategoryId)
+    if (!selectedCategory?.selectedHeadingId) return
+    
+    const headingInfo = headingManager.getById(selectedCategory.selectedHeadingId)
+    if (!headingInfo) return
+
     const headingFile = vault.getFileByPath(headingInfo.path)
-    const headingName = headingInfo.name
-
     if (!headingFile) return
+    
+    const headingName = headingInfo.name
+    console.log(headingInfo.name)
+    
+    // Selected Category > Selected Heading > Heading Manager get by id
 
-    const headingIds = categoryManager.getHeadingIdsFromCategory(selectedCategoryId)
     const selection = getLineFromCursor(editor)
 
     vault.read(headingFile).then((fileContent) => {

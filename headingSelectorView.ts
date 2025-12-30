@@ -40,7 +40,6 @@ export class HeadingSelectorView extends ItemView {
         const container = this.contentEl;
         container.empty();
 
-        console.log(currentCategory?.name)
         // Add dropdown
         new Setting(container).addDropdown((dropdown) => {
             
