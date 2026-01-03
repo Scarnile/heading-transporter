@@ -28,12 +28,12 @@ export default class HeadingTransporterPlugin extends Plugin {
 	settings: HeadingTransporterSettings
 	headingManager: HeadingManager
 	categoryManager: HeadingCategoryManager
+	headingSelectorView: HeadingSelectorView
 
 	async onload() {
 		await this.loadSettings();
 		this.headingManager = new HeadingManager(this.settings.headingInfos)
 		this.categoryManager = new HeadingCategoryManager(this.settings.headingCategories)
-		let headingSelectorView: HeadingSelectorView
 		
 		const app = this.app
 		const headingInfos = this.settings.headingInfos
@@ -46,7 +46,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 				id: "transport-heading-" + index,
 				name: "Transport to " + headingName,
 				callback: () => {
-					const pluginContext = new PluginContext(app, this, headingSelectorView)
+					const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 					TransportToHeading(pluginContext)
 				}
 			})
@@ -56,7 +56,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "transport-heading",
 			name: "Transport Heading",
 			callback: () => {
-				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 				TransportToHeading(pluginContext)
 			}
 		})
@@ -65,7 +65,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id:"move-heading-selection-up",
 			name: "Move heading selection up",
 			callback: () => {
-				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 				MoveHeadingSelection(-1, pluginContext)
 			}
 		})
@@ -74,7 +74,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id:"move-heading-selection-down",
 			name: "Move heading selection down",
 			callback: () => {
-				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 				MoveHeadingSelection(1, pluginContext)
 			}
 		})
@@ -83,7 +83,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 			id: "check-heading-exists",
 			name: "Check Heading Exists",
 			callback: () => {
-				const pluginContext = new PluginContext(app, this, headingSelectorView)
+				const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 				CheckHeadingExists(pluginContext)	
 			}
 		})
@@ -130,7 +130,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 						.setTitle('Add to Heading Selector')
 						.setIcon('document')
 						.onClick(async () => {	
-							const pluginContext = new PluginContext(app, this, headingSelectorView)
+							const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 							
 							const headingName = GetHeadingName(lineContent)
 							const path = view.file?.path
@@ -144,7 +144,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 							this.settings.headingInfos = this.headingManager.getAllHeadings()
 							await this.saveSettings()
 
-							if (headingSelectorView) headingSelectorView.display()
+							if (this.headingSelectorView) this.headingSelectorView.display()
 						});
 					
 					});
@@ -160,7 +160,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 		this.registerView(
 			HEADING_SELECTOR_VIEW_TYPE,
-			(leaf) => headingSelectorView = new HeadingSelectorView(leaf, this)
+			(leaf) => this.headingSelectorView = new HeadingSelectorView(leaf, this)
 		)
 
 		const ribbonIconEl = this.addRibbonIcon('a-large-small', 'Heading Transporter', (evt: MouseEvent) => {
@@ -239,11 +239,16 @@ export default class HeadingTransporterPlugin extends Plugin {
 
 
 class HeadingTransporterSettingTab extends PluginSettingTab {
-	plugin: HeadingTransporterPlugin;
+
+	plugin: HeadingTransporterPlugin
+	settings: HeadingTransporterSettings
+	categoryManager: HeadingCategoryManager
 
 	constructor(app: App, plugin: HeadingTransporterPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		this.settings = plugin.settings
+		this.categoryManager = plugin.categoryManager
 	}
 
 	display(): void {
@@ -251,6 +256,25 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		const categories = this.plugin.categoryManager.serialize()
+
+		let categoryName: string
+		new Setting(containerEl)
+			.setName("Add Category")
+			.addText((text) => { text
+				.onChange((value) => {
+					categoryName = value
+				})
+			})
+			.addButton((button) => { button
+				.setIcon("plus")
+				.onClick(() => {
+					this.categoryManager.addCategory(categoryName)
+					this.settings.headingCategories = this.categoryManager.serialize()
+					this.plugin.saveData(this.settings)
+					this.plugin.headingSelectorView.display()
+					this.display()
+				})
+			})
 
 		// Display all heading categories
 		categories.forEach((category) => {
@@ -276,10 +300,10 @@ class HeadingTransporterSettingTab extends PluginSettingTab {
 		const uncategorized = this.plugin.getUncategorizedHeadings()
 		uncategorized.forEach((heading) => {
 			new Setting(containerEl)
-			.setName(heading.name)
-			.addButton((button) => {
-				button.setIcon("plus")
-			})
+				.setName(heading.name)
+				.addButton((button) => {
+					button.setIcon("plus")
+				})
 		})
 
 		containerEl.createEl("h1", {text: "Settings"})
