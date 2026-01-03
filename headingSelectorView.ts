@@ -59,6 +59,7 @@ export class HeadingSelectorView extends ItemView {
         
         if (headingsToDisplay && currentCategory) {
             this.displayHeadings(headingsToDisplay, currentCategory, container)
+            console.log(headingsToDisplay)
         } 
         
     }

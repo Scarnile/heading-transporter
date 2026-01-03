@@ -34,6 +34,9 @@ export class CategorySelectionModal extends SuggestModal<HeadingCategory> {
 	// Perform action on the selected suggestion.
 	onChooseSuggestion(category: HeadingCategory, evt: MouseEvent | KeyboardEvent) {
 		this.categoryManager.addHeadingToCategory(this.headingId, category)
+		this.plugin.settings.headingInfos = this.plugin.headingManager.getAllHeadings()
+		this.plugin.saveSettings()
+		this.plugin.headingSelectorView.display()
 	}
 }
 

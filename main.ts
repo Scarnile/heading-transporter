@@ -129,7 +129,7 @@ export default class HeadingTransporterPlugin extends Plugin {
 					item
 						.setTitle('Add to Heading Selector')
 						.setIcon('document')
-						.onClick(async () => {	
+						.onClick(() => {	
 							const pluginContext = new PluginContext(app, this, this.headingSelectorView)
 							
 							const headingName = GetHeadingName(lineContent)
@@ -139,12 +139,6 @@ export default class HeadingTransporterPlugin extends Plugin {
 							const headingInfo = this.headingManager.saveHeading(headingName, path)
 
 							new CategorySelectionModal(headingInfo.id, pluginContext).open()
-
-							// Save and Display
-							this.settings.headingInfos = this.headingManager.getAllHeadings()
-							await this.saveSettings()
-
-							if (this.headingSelectorView) this.headingSelectorView.display()
 						});
 					
 					});
