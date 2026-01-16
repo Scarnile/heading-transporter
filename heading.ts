@@ -40,7 +40,6 @@ export class HeadingManager extends BaseManager<HeadingInfo>{
         return [...this.items.values()]
     }
 
-    
 }
 
 export const TransportToHeading = (pluginContext: PluginContext) => {

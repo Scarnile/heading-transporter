@@ -1,7 +1,7 @@
 import { HeadingCategory, HeadingCategoryManager } from "headingCategory";
 import { HeadingInfo, RemoveHeading } from "heading";
 import HeadingTransporterPlugin, { HeadingTransporterSettings } from "main";
-import { ItemView, Menu, Notice, Setting, WorkspaceLeaf } from "obsidian"
+import { ItemView, Menu, Notice, Setting, WorkspaceLeaf, setIcon } from "obsidian"
 
 export const HEADING_SELECTOR_VIEW_TYPE = 'heading-selector-view'
 
@@ -40,22 +40,32 @@ export class HeadingSelectorView extends ItemView {
         const container = this.contentEl;
         container.empty();
 
+        const categoryContainer = container.createEl("div", {cls: "hsp-category-tab-container"})
+
+        // Load the dropdown options with the saved categories
+        const headingCategories = this.settings.headingCategories
+        headingCategories.forEach((headingCategory) => {
+            const categoryTab = categoryContainer.createEl("div", {cls: "hsp-category-tab"})
+            categoryTab.createEl("p", {text: headingCategory.name})
+        })
+
+
         // Add dropdown
-        new Setting(container).addDropdown((dropdown) => {
+        // new Setting(container).addDropdown((dropdown) => {
             
-            // Load the dropdown options with the saved categories
-            const headingCategories = this.settings.headingCategories
-            headingCategories.forEach((headingCategory) => {
-                dropdown.addOption(headingCategory.id, headingCategory.name)
-            })
+        //     // Load the dropdown options with the saved categories
+        //     const headingCategories = this.settings.headingCategories
+        //     headingCategories.forEach((headingCategory) => {
+        //         dropdown.addOption(headingCategory.id, headingCategory.name)
+        //     })
             
-            dropdown.setValue(this.settings.selectedCategoryId)
-            dropdown.onChange(async (value) => {
-                this.settings.selectedCategoryId = value
-                this.display()
-                await this.plugin.saveSettings()
-            })
-        }).setClass("hsp-dropdown")
+        //     dropdown.setValue(this.settings.selectedCategoryId)
+        //     dropdown.onChange(async (value) => {
+        //         this.settings.selectedCategoryId = value
+        //         this.display()
+        //         await this.plugin.saveSettings()
+        //     })
+        // }).setClass("hsp-dropdown")
         
         if (headingsToDisplay && currentCategory) {
             this.displayHeadings(headingsToDisplay, currentCategory, container)

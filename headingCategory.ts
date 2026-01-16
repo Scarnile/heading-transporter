@@ -13,8 +13,6 @@ export type HeadingCategory = {
 
 export class HeadingCategoryManager extends BaseManager<HeadingCategory> {
 
-    // Heading Category ID returns the HeadingCategory object
-
     addCategory(name: string, ...headingIds: string[]): HeadingCategory {
 
         const info: HeadingCategory = {

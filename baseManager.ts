@@ -1,5 +1,6 @@
 
 export abstract class BaseManager<T extends {id: string}> {
+    // Returns the saved item when given an id
     items: Map<string, T> = new Map()
 
     // Convert initial data to a map

@@ -37,3 +37,12 @@
     width: 100%;
     box-shadow: none;
 }
+
+.hsp-category-tab-container {
+    display: flex;
+    gap: 10px;
+}
+
+.hsp-category-tab {
+    display: inline;
+}
