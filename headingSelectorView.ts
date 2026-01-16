@@ -40,7 +40,7 @@ export class HeadingSelectorView extends ItemView {
         const container = this.contentEl;
         container.empty();
 
-        const categoryContainer = container.createEl("div", {cls: "hsp-category-tab-container"})
+        const categoryContainer = container.createEl("div", {cls: "hsp-category-tabs"})
 
         // Load the dropdown options with the saved categories
         const headingCategories = this.settings.headingCategories
@@ -49,24 +49,9 @@ export class HeadingSelectorView extends ItemView {
             categoryTab.createEl("p", {text: headingCategory.name})
         })
 
-
-        // Add dropdown
-        // new Setting(container).addDropdown((dropdown) => {
-            
-        //     // Load the dropdown options with the saved categories
-        //     const headingCategories = this.settings.headingCategories
-        //     headingCategories.forEach((headingCategory) => {
-        //         dropdown.addOption(headingCategory.id, headingCategory.name)
-        //     })
-            
-        //     dropdown.setValue(this.settings.selectedCategoryId)
-        //     dropdown.onChange(async (value) => {
-        //         this.settings.selectedCategoryId = value
-        //         this.display()
-        //         await this.plugin.saveSettings()
-        //     })
-        // }).setClass("hsp-dropdown")
+        categoryContainer.createEl("p" ,{text: "...", cls: "hsp-more-menu"})
         
+        // Display headings
         if (headingsToDisplay && currentCategory) {
             this.displayHeadings(headingsToDisplay, currentCategory, container)
             console.log(headingsToDisplay)
